@@ -1,0 +1,3443 @@
+:root {
+  --header-height: 190px;
+  --sidebar-width: 80px; /* Increased slightly for better spacing */
+  --sidebar-expanded-width: 200px;
+}
+
+/* ===== START: HEADER STYLES (Unchanged) ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    /* THIS IS THE KEY FIX: Makes space for the fixed header */
+    padding-top: var(--header-height);
+    overflow: hidden; /* Sin scroll en el body, el scroll está en los contenedores internos */
+    min-height: 100vh;
+    height: 100vh; /* Altura fija para evitar scroll externo */
+}
+
+.header-container {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 80px; /* Reduced padding for a shorter header */
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 6px -1px, rgba(0, 0, 0, 0.1) 0px 6px 4px -1px;
+    position: relative;
+    z-index: 1100; /* Aumentado para estar sobre side-menu (1050) y filter-info (1001) */
+}
+
+.logos-left {
+    display: flex;
+    align-items: center;
+}
+
+.gov-logo {
+    height: 150px; /* Reduced size */
+}
+
+.desarrollo-logo {
+    height: 150px; /* Reduced size */
+    padding-left: 0px;
+}
+
+.logos-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    position: relative; /* Needed for absolute positioning of accessibility logo */
+}
+
+.campaign-logo img {
+    height: 100px; /* Reduced size */
+}
+.accesibility-logo{
+  position: absolute;
+  top: 50%; /* Center vertically relative to top-header */
+  right: -25px; /* Position outside to the right, overlapping/hugging the header */
+  transform: translateY(-50%); /* Perfect vertical centering */
+  height: 100px; /* Size similar to reference image */
+  width: 100px;
+  cursor: pointer;
+  z-index: 1001; /* Ensure it's above other elements */
+}
+
+.accesibility-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.accesibility-logo:hover {
+  transform: translateY(-50%) scale(1.05); /* Slight scale on hover while maintaining centering */
+  transition: transform 0.3s ease;
+}
+
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 40px; /* Reduced padding */
+    position: relative;
+    z-index: 1100; /* Aumentado para estar sobre side-menu (1050) y filter-info (1001) */
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #74767b;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.nav-links a:hover {
+  color: #333;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: #5a1b30; /* color de marca */
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #666;
+}
+
+.search-container {
+    display: none;
+    padding: 15px 40px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.search-container.active {
+    display: block;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* --- Accessibility Menu --- */
+.accessibility-menu {
+    position: fixed;
+    top: 50%;
+    right: -350px;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 10px 0 0 10px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    width: 320px;
+    padding: 20px;
+    transition: right 0.3s ease;
+    z-index: 1001;
+}
+
+.accessibility-menu.active {
+    right: 0;
+}
+
+.accessibility-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+.accessibility-header h3 { color: #333; font-size: 16px; margin: 0; }
+.close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #8B1538; font-weight: bold; }
+.accessibility-option { display: flex; align-items: center; gap: 12px; padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-radius: 5px; }
+.accessibility-option:hover { background: #f5f5f5; }
+.option-icon { width: 24px; height: 24px; background: #5a1b30; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+.option-text { color: #333; font-size: 14px; }
+
+/* --- Hamburger Menu (Initially hidden on desktop) --- */
+.hamburger-menu {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 50px;
+    height: 24px;
+}
+
+.hamburger-menu .bar {
+    width: 100%;
+    height: 5px;
+    background-color: #5a1b30;
+    border-radius: 5px;
+}
+
+/* --- WRF Modal Styles --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+/* Estilos base para modal-content (usado por glosario y modales informativos) */
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 700px;  /* Modal más pequeño para glosario/información */
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    margin: 20px;
+    padding: 25px;
+    position: relative;
+}
+
+/* Modal más grande para datos de municipios con gráficas */
+.modal-dialog .modal-content {
+    max-width: 1400px !important;  /* Modal grande para gráficas */
+    width: 100% !important;
+    padding: 0;  /* El padding lo manejan los elementos internos */
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px;
+        padding: 15px;
+        overflow-x: hidden;
+    }
+    
+    /* Asegurar que el contenido no se desborde */
+    .modal-content * {
+        max-width: 100%;
+    }
+    
+    /* Grid de gráficas responsive */
+    .modal-content .charts-grid {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 2px solid #f0f0f0;
+    background: linear-gradient(135deg, #5a1b30 0%, #8B1538 100%);
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: white;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.modal-body h3 {
+    color: #5a1b30;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-body ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.modal-body ul li {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.modal-body ul li strong {
+    color: #5a1b30;
+}
+
+.modal-footer-text {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    font-style: italic;
+    color: #666;
+}
+
+.modal-footer-text a {
+    color: #8B1538;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.modal-footer-text a:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsive Styles for Header --- */
+@media (max-width: 992px) {
+    .top-header, .nav-menu {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .logos-left, .logos-right, .nav-links {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Hide desktop nav links and show hamburger */
+  /* Importante: no ocultar con display:none para permitir el panel deslizante */
+  /* .nav-menu .nav-links { display: none; } */
+    .hamburger-menu {
+        display: flex;
+    }
+    .nav-menu {
+        justify-content: flex-end; /* Push hamburger and search to the right */
+        gap: 20px;
+    }
+    /* Mobile slide-out menu style */
+  .nav-links {
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: white;
+        height: 100vh;
+        width: 300px;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* scroll suave en móviles */
+        padding: 20px;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+        z-index: 10002 !important; /* Higher than map and header */
+        display: flex; /* Re-enable display for the slide-out */
+        pointer-events: auto !important;
+    }
+  /* Reforzar visibilidad cuando está activo, combinando la especificidad del selector anterior */
+  .nav-menu .nav-links.active {
+    display: flex !important;
+    transform: translateX(0);
+  }
+    .nav-links.active {
+        transform: translateX(0);
+        z-index: 10002 !important;
+    }
+    .top-header {
+        height: 190px;       /* mantener fijo */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    .desarrollo-logo {
+        border-left: none;
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 1230px) {
+  /* Mostrar logos principales en una fila móvil para evitar apilar uno encima de otro */
+  .logos-left, .logos-right {
+    flex-direction: row; /* Mantener en fila */
+    align-items: center;
+    gap: 10px;
+  }
+  /* Asegurar que las imágenes escalen y no causen overflow */
+
+/* ===== Scrollbar Styling (Global) ===== */
+/* Firefox */
+html {
+  scrollbar-width: thin;                 /* auto | thin | none */
+  scrollbar-color: #5a1b30 #c19862be;    /* thumb color, track color */
+}
+
+/* WebKit (Chrome, Edge, Safari, Opera) */
+*::-webkit-scrollbar {
+  width: 10px;           /* vertical scrollbar */
+  height: 10px;          /* horizontal scrollbar */
+}
+*::-webkit-scrollbar-track {
+  background: #c19862be; /* track (fondo) */
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #5a1b30; /* thumb (el objeto que se mueve) */
+  border-radius: 8px;
+  border: 2px solid #c19862be; /* pequeño borde para integración visual */
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #4a142a; /* sutil oscurecimiento al hover */
+}
+  .logos-left img, .logos-right img {
+    /* más grande y responsivo: mínimo 90px, ideal según viewport, máximo 150px */
+    height: clamp(90px, 9vw, 150px);
+    max-width: 100%; /* evitar que una imagen crezca demasiado */
+    object-fit: contain;
+    display: inline-block;
+  }
+  .gov-logo { height: clamp(90px, 9vw, 150px); }
+  .desarrollo-logo { height: clamp(56px, 9vw, 100px); }
+  .campaign-logo img {
+    height: 60px;
+  }
+  /* Evitar solapamiento del logo de accesibilidad en pantallas pequeñas */
+  .accesibility-logo {
+    position: relative;
+    right: 0;
+    top: 0;
+    transform: none;
+    width: 56px; /* un poco más grande para mantener legibilidad */
+    height: 56px;
+    margin-left: 8px;
+  }
+}
+
+/* Ajustes extra para móviles pequeños: evitar desbordes del header */
+@media (max-width: 576px) {
+  .top-header {
+    height: 190px;         /* Mantener altura fija solicitada */
+    padding: 8px 16px;     /* Menos padding lateral */
+    flex-wrap: wrap;       /* Permitir que los bloques se bajen si no caben */
+    gap: 10px;
+  }
+  .logos-left, .logos-right {
+    flex-wrap: wrap;       /* Permitir que los logos se acomoden en 2 filas si es necesario */
+    justify-content: center;
+    gap: 8px;
+  }
+  .logos-left img, .logos-right img,
+  .gov-logo, .desarrollo-logo {
+    height: clamp(48px, 16vw, 72px); /* Reducir altura mínima en móviles pequeños */
+    max-width: 100%;
+    object-fit: contain;
+  }
+  .desarrollo-logo { height: clamp(44px, 15vw, 64px); }
+  .campaign-logo img { height: 44px; }
+  /* Asegurar que el icono de accesibilidad no se superponga */
+  .accesibility-logo {
+    position: relative;
+    right: 0;
+    top: 0;
+    transform: none;
+    width: 48px;
+    height: 48px;
+    margin-left: 6px;
+  }
+}
+
+/* Ultra pequeño: apilar bloques y ocultar campaña si no hay espacio */
+@media (max-width: 400px) {
+  .top-header { flex-direction: column; align-items: center; }
+  /* Mantener todas las imágenes visibles, reducir tamaños para que quepan */
+  .logos-left img, .logos-right img,
+  .gov-logo, .desarrollo-logo { height: clamp(36px, 14vw, 50px); }
+  .campaign-logo img { height: clamp(34px, 13vw, 46px); }
+  .accesibility-logo { width: 40px; height: 40px; }
+}
+
+
+/* ===== END: NEW HEADER STYLES ===== */
+
+
+/* Estilo para el banner */
+.banner {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  margin-top: var(--header-height); /* Adjusted to match new header height */
+  background-image: url("../images/header/nuevo_header.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Capa de transparencia */
+.banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Color negro con 40% de opacidad */
+  z-index: 1; /* Asegura que la capa de transparencia esté sobre la imagen */
+}
+
+/* Contenido del banner */
+.banner-content {
+  position: relative;
+  z-index: 2; /* Asegura que el texto esté sobre la capa de transparencia */
+  color: white;
+  text-align: left;
+  margin-left: 20px;
+  padding: 40px 20px;
+  padding-top: 80px;
+}
+
+/* Estilo para el título */
+.banner-title {
+  font-size: 48px; /* Ajusta el tamaño del título */
+  font-weight: bold;
+  margin-bottom: 10px;
+  max-width: 65%;
+}
+
+/* Estilo para el subtítulo */
+.banner-subtitle {
+  font-size: 20px; /* Ajusta el tamaño del subtítulo */
+  line-height: 1.5;
+  margin-top: 0;
+  max-width: 900px;
+}
+
+
+
+/* Responsive para banner */
+@media (max-width: 768px) {
+  .banner-title {
+    font-size: 28px;
+    max-width: 90%;
+  }
+  
+  .banner-subtitle {
+    font-size: 14px;
+    max-width: 90%;
+    line-height: 1.5;
+  }
+}
+
+/* Ajuste para la tarjeta */
+.card {
+  overflow: hidden;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra suave para dar profundidad */
+  transition: transform 0.3s ease-in-out; /* Animación para hover */
+  margin-bottom: 10px;
+}
+
+.card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none; /* Elimina el subrayado */
+}
+
+/* Imagen de fondo */
+.card-img {
+  height: 350px;
+  background-size: cover;
+  background-position: bottom;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 10px;
+  align-self: center;
+}
+
+/* Fondo oscuro para mejorar la visibilidad del texto */
+.card-img::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Capa oscura */
+  z-index: 1;
+}
+
+/* Estilo para el texto dentro de la tarjeta */
+.card-text {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.card-text h5 {
+  margin: 0;
+  padding: 10px 20px;
+}
+
+.card-text span {
+  font-size: 30px;
+  display: block;
+  margin-top: 10px;
+  transition: transform 0.3s ease;
+}
+
+/* Animación de hover en la tarjeta */
+.card:hover {
+  transform: translateY(
+    -10px
+  ); /* Levanta ligeramente la tarjeta cuando se pasa el mouse */
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+  .card-img {
+    height: 300px; /* Ajustamos la altura en pantallas pequeñas */
+  }
+
+  .card-text h5 {
+    font-size: 18px; /* Reducimos el tamaño del título en móviles */
+  }
+}
+
+#app {
+  display: none;
+  position: relative;
+  margin-top: 60px; /* This adds the space */
+  height: auto; /* This adjusts the height for the new margin */
+}
+
+
+
+#app #map {
+  position: absolute;
+  top: 0; /* Starts at the top of the #app container */
+  left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  height: 100%; /* Fills the #app container */
+  z-index: 1;
+  overscroll-behavior: none;
+}
+
+/* Controles dentro de #app */
+#app .controls-panel {
+  display: flex;
+  position: absolute;
+  top: 150px;
+  left: auto;
+  margin-right: 20px;
+  right: 0px;
+  max-width: 40%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  z-index: 3000;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#app .controls-panel label,
+#app .controls-panel select,
+#app .controls-panel input[type="range"],
+#app .controls-panel button {
+  flex: 1 1 150px;
+  margin: 5px;
+  border: none;
+}
+
+#app .controls-panel label {
+  font-size: 1.5em;
+}
+
+/* Pie del panel en fila */
+#app .controls-panel .controls-footer {
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+#app .controls-panel .controls-footer button {
+  flex: 1;
+  margin: 0 5px;
+}
+
+/* Toggle button */
+#controls-toggle {
+  position: absolute;
+  top: 17%;
+  right: 10px;
+  height: 230px;
+  opacity: 1;
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2001;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#controls-toggle:hover {
+  background: #0056b3;
+}
+
+#app .controls-panel button,
+#app .controls-panel .controls-footer button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+#app .controls-panel button:hover,
+#app .controls-panel .controls-footer button:hover {
+  background: #0056b3;
+}
+
+/* Panel plegado */
+.controls-panel.collapsed {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: visibility 0s 0.3s, opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Panel desplegado */
+.controls-panel.expanded {
+  visibility: visible;
+  background-color: whitesmoke;
+  opacity: 1;
+  height: auto;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Ajustes al encabezado del panel */
+#app .controls-panel .panel-header {
+  flex: 1 1 100%; /* Ocupa toda la línea */
+  font-size: 2em; /* Más grande */
+  font-weight: 700; /* Negritas */
+  text-align: center;
+  color: black; /* Un azul oscuro para contraste */
+  margin: 0 0 15px 0; /* Separación abajo */
+  padding-bottom: 5px;
+  border-bottom: 2px solid rgba(0, 123, 255, 0.5); /* Línea sutil inferirm */
+}
+
+/* Redondear y ajustar margen de selects y ranges */
+#app .controls-panel select,
+#app .controls-panel input[type="range"] {
+  border-radius: 6px; /* Más redondeado */
+  margin: 8px 0; /* Espacio arriba y abajo uniforme */
+}
+
+/* Asegurar que los labels no se amontonen */
+#app .controls-panel label {
+  margin: 12px 0 4px 0; /* Espacio antes y después */
+  font-weight: 500;
+  color: #333;
+}
+
+#app .controls-panel button {
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+#app .controls-panel {
+  padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+  #app .controls-panel {
+    position: absolute;
+    top: 56px;
+    right: 5px;
+    bottom: 10px;
+    width: 60%;
+    max-width: none;
+    transform: none;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    /* Evita segunda scrollbar: deja que el body/modal maneje el scroll */
+    overflow-y: visible;
+    max-height: none;
+    padding: 10px;
+    gap: 8px;
+    z-index: 2005;
+  }
+
+  /* Todos los controles ocupan el 100% del ancho con margen */
+  #app .controls-panel label,
+  #app .controls-panel select,
+  #app .controls-panel input[type="range"],
+  #app .controls-panel button {
+    flex: none;
+    width: calc(100% - 20px);
+    margin: 5px 10px;
+  }
+
+  /* Encabezado centrado y más espaciado */
+  #app .controls-panel .panel-header {
+    margin: 0 10px 15px;
+  }
+
+  /* Footer en columna */
+  #app .controls-panel .controls-footer {
+    flex-direction: column;
+    margin-top: 15px;
+  }
+  #app .controls-panel .controls-footer button {
+    width: calc(100% - 20px);
+    margin: 5px 10px;
+  }
+
+  /* Ajuste del mapa */
+  #app #map {
+    top: 0 !important;
+    height: 100% !important;
+  }
+}
+
+/* Bloque de estabilización: evitar bloqueos de scroll en móvil */
+/* Solo controlar overscroll en el mapa, no en todo el body */
+body.map-active #app #map { overscroll-behavior: contain; }
+@media (max-width:768px){
+  /* Permitir desplazamiento vertical del documento y gestos en el mapa */
+  body { overflow-y: auto; }
+  body.map-active #app #map { touch-action: pan-x pan-y; }
+}
+
+.ol-scale-line {
+  position: absolute !important;
+  bottom: 200px !important; /* Justo encima del map-legend */
+  left: 50px !important; /* 10px desde el borde del sidebar */
+  right: auto !important;
+  transform: none !important; /* Sin transformación en desktop */
+  padding: 4px 8px 6px 8px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: "Poppins", sans-serif !important;
+  z-index: 1600 !important;
+  pointer-events: none;
+  width: auto !important;
+  max-width: 33vw;
+  overflow: visible;
+}
+
+/* En móvil, centrar la escala y hacerla crecer del centro a los bordes */
+@media (max-width: 768px) {
+  .ol-scale-line {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important; /* Centrar en móvil */
+    transform-origin: center !important; /* Crecer desde el centro */
+    text-align: center !important; /* Centrar contenido interno */
+  }
+  
+  /* Hacer que la barra crezca desde el centro */
+  .ol-scale-line-inner {
+    transform-origin: center !important;
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important; /* Anclar al centro del contenedor */
+    display: inline-block !important;
+  }
+  
+  .ol-scale-line-body {
+    transform-origin: center !important;
+  }
+}
+
+/* Contenedor interno renderizado por OL cuando bar:true */
+.ol-scale-line-inner {
+  position: relative;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: .5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.55);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Cuerpo (barra) personalizado de la escala: lo generamos vía JS si OL sólo muestra texto */
+.ol-scale-line-body {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 8px;
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px; /* deja el texto debajo */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.45);
+  background: #fff; /* fondo base para el primer segmento */
+}
+
+.ol-scale-line-segment {
+  flex: 1 1 auto;
+  height: 100%;
+}
+.ol-scale-line-segment.alt {
+  background: #333;
+}
+.ol-scale-line-segment:first-child {
+  background: #fff;
+}
+.ol-scale-line-segment:not(:first-child):not(.alt) {
+  background: #fff;
+}
+
+/* Forzar que OL no deje un ancho enorme cuando hay texto medido internamente */
+.ol-scale-line.ol-unselectable {
+  width: auto !important;
+}
+
+
+/* Barra base blanca */
+.ol-scale-line-inner canvas, .ol-scale-line-inner div { /* OL genera elementos para bar */
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+}
+
+/* Etiquetas encima de la barra (valores 0, 100, etc.) */
+.ol-scale-line-inner span { /* si OL genera spans/textos (según versión) */
+  position: relative;
+  top: -4px;
+}
+
+/* Ocultar la etiqueta de texto (p.ej., "100 km") de la escala de OL, conservando solo la barra */
+#app .ol-scale-line .ol-scale-line-inner,
+.ol-scale-line .ol-scale-line-inner {
+  font-size: 0 !important;      /* oculta el texto sin afectar el canvas/div de la barra */
+  line-height: 0 !important;
+}
+#app .ol-scale-line .ol-scale-line-inner canvas,
+.ol-scale-line .ol-scale-line-inner canvas,
+#app .ol-scale-line .ol-scale-line-inner > div:not(.ol-scale-line-body):not(.ol-scale-line-ticks),
+.ol-scale-line .ol-scale-line-inner > div:not(.ol-scale-line-body):not(.ol-scale-line-ticks) {
+  display: none !important; /* Ocultar la barra nativa de OL; mantener nuestra barra y ticks */
+}
+#app .ol-scale-line .ol-scale-line-inner span,
+.ol-scale-line .ol-scale-line-inner span {
+  display: none !important;     /* por si OL inserta spans para el texto */
+}
+
+/* Ticks y etiquetas personalizadas para la barra segmentada */
+.ol-scale-line-ticks {
+  position: relative;
+  width: 100%;
+  height: 24px; /* espacio arriba de la barra */
+  margin-bottom: 2px; /* luego va la barra */
+  font-size: 11px;
+  font-family: "Poppins", sans-serif;
+  pointer-events: none;
+}
+.ol-scale-line-ticks .scale-tick {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  height: 100%;
+}
+.ol-scale-line-ticks .scale-tick::before {
+  content: "";
+  position: absolute;
+  bottom: 0; /* arranca justo sobre la barra */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 10px;
+  background: #ffffff;
+  box-shadow: 0 0 2px rgba(0,0,0,.5);
+  border-radius: 1px;
+}
+.ol-scale-line-ticks .scale-tick-label {
+  position: absolute;
+  bottom: 12px; /* encima del tick */
+  left: 50%;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.65);
+  font-weight: 500;
+  padding: 0 2px;
+}
+.ol-scale-line-ticks .scale-unit { display: none; }
+
+/* Línea adicional para mostrar escala absoluta (ej: Escala 1:1000) */
+.ol-scale-ratio {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #e8e8e8;
+}
+.side-menu {
+  position: fixed;
+   top: calc(var(--sidebar-width) + 8.5%); /* Correctly positioned below the fixed header */
+  left: 0;
+  height: calc(100vh - var(--header-height));
+  width: var(--sidebar-width);
+  background-color: #5a1b30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0px;
+  padding-top: 20px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 3000;
+}
+
+/* Búsqueda y Leyenda: mobile debajo de controles */
+.search-mobile-slot,
+.legend-mobile-slot { display: none; }
+
+@media (max-width: 768px) {
+  #search-section,
+  #legend-section { display: none; }
+  
+  .search-mobile-slot { 
+    display: block; 
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .legend-mobile-slot { 
+    display: block; 
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .search-mobile-slot h4,
+  .legend-mobile-slot h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .legend-mobile-slot .legend-content { margin-top: 6px; }
+}
+
+.side-menu.expanded ~ #map {
+  left: 200px;
+  width: var(--sidebar-expanded-width);
+}
+
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  color: white;
+  font-size: 20px;
+  background: transparent; /* transparent so active gradient is clearly visible */
+  border: none;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.menu-label {
+  display: inline-block;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+/* Mostrar texto al expandirse */
+.side-menu.expanded .menu-label {
+  opacity: 1;
+}
+
+.menu-btn:hover {
+  background-color: #c19862;
+  border-radius: 5px;
+}
+
+/* Estilos para botón activo - máxima especificidad */
+ .side-menu .menu-btn.active,
+ #side-menu .menu-btn.active,
+ .menu-btn.active {
+  background: #5a1b30 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: 600;
+  position: relative;
+  overflow: visible;
+}
+
+/* Subtle animated sheen */
+/* Se elimina efecto sheen y borde blanco para un estilo sólido simple */
+
+ .side-menu .menu-btn.active:hover,
+ #side-menu .menu-btn.active:hover,
+ .menu-btn.active:hover {
+  background: #5a1b30 !important;
+  color: #ffffff !important;
+  transform: none !important;
+}
+
+@media (max-width: 769px) {
+  .side-menu {
+    display: none !important;
+  }
+
+  /* Comportamiento condicional: en modo mapa, el mapa ocupa la pantalla debajo del header; fuera de mapa, deja fluir */
+  body.map-active #app #map {
+    position: fixed !important;
+    top: var(--header-height) !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - var(--header-height)) !important;
+    min-height: calc(100vh - var(--header-height)) !important;
+    pointer-events: auto !important;
+  }
+  body:not(.map-active) #app #map {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  
+  /* Ensure header is above the map */
+  .header-container {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Ensure hamburger menu is clickable */
+  .hamburger-menu {
+    position: relative;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+  }
+
+/* Search bar, now positioned absolutely within #app */
+#map-top-bar {
+  position: absolute;
+  top: 20px;
+  left: calc(var(--sidebar-width) + 20px); /* Offset from the sidebar */
+  z-index: 1000;
+  width: 300px;
+}
+
+  #gradient-container.vertical {
+    left: 8px;
+    top: 120px;
+  }
+
+  .map-legend {
+    left: 10px;
+  }
+}
+
+/* Gradient container vertical */
+#gradient-container.vertical {
+  position: fixed;
+  left: calc(var(--sidebar-width) + 30px);
+  top: var(--header-height);
+  width: 250px;
+  height: calc(100vh - var(--header-height) - 20px);
+  max-height: calc(100vh - var(--header-height) - 20px);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Modo combinado: escala vertical + barra horizontal debajo */
+/* Escala incrustada dentro del panel */
+#gradient-container.horizontal-mode.embedded {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  padding: 12px 14px 16px 14px;
+  margin-top: 10px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 0 2px 6px rgba(0,0,0,0.15);
+  pointer-events: auto;
+}
+
+/* Variante flotante al fondo ocupando 1/3 del ancho */
+/* Variante flotante fija en esquina inferior izquierda */
+#gradient-container.horizontal-mode.embedded.bottom-floating {
+  position: fixed; /* Asegura que no se mueva */
+  top: 85%; /* más pegado a la parte inferior */
+  left: 90px;         /* 👈 Esto es crucial */
+  transform: none;
+  width: 450px; /* ligeramente más compacto */
+  max-width: 480px;
+  min-width: 300px;
+  margin-top: 0;
+  padding: 10px 14px 12px 14px; /* menos alto */
+  backdrop-filter: blur(5px);
+  z-index: 3005; /* por encima del mapa */
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
+}
+
+@media (max-width: 1400px) {
+  #gradient-container.horizontal-mode.embedded.bottom-floating { width: 460px; }
+}
+@media (max-width: 992px) {
+  #gradient-container.horizontal-mode.embedded.bottom-floating { width: 320px; }
+}
+@media (max-width: 768px) {
+  #gradient-container.horizontal-mode.embedded.bottom-floating {
+    width: calc(100% - 32px);
+    left: 16px;
+    /* Desplazar ligeramente más a la izquierda */
+    transform: translateX(-50%) !important;
+    padding: 10px 14px 14px 14px;
+  }
+}
+@media (max-width: 480px) {
+  #gradient-container.horizontal-mode.embedded.bottom-floating {
+    width: calc(100% - 24px);
+    left: 12px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    padding: 9px 12px 12px 12px;
+  }
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* menos separación vertical */
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-variable {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: .3px;
+  text-transform: capitalize;
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-bar-horizontal {
+  width: 100%;
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-meta-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 2px;
+  gap: 8px;
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-horizontal-values {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  user-select: none;
+  pointer-events: none;
+}
+
+#gradient-container.horizontal-mode.embedded .gradient-inline-unit {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #555;
+  margin-left: 4px;
+}
+
+@media (max-width: 768px) {
+  #gradient-container.horizontal-mode.embedded {
+    padding: 10px 12px 14px 12px;
+  }
+  #gradient-container.horizontal-mode.embedded .gradient-variable { font-size: 14px;}
+  #gradient-container.horizontal-mode.embedded .gradient-horizontal-values { font-size: 10px; }
+  #gradient-container.horizontal-mode.embedded .gradient-inline-unit { font-size: 0.85em; }
+  
+  /* Move gradient scale below gradient-inner and center it */
+  #gradient-container.horizontal-mode.embedded.bottom-floating {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 350px !important;
+    z-index: 2000 !important;
+  }
+  
+  #gradient-container.horizontal-mode.embedded .gradient-inner {
+    margin-top: 0;
+    text-align: center;
+  }
+}
+
+.gradient-horizontal-wrapper {
+  width: 100%;
+  margin-top: 14px;
+  padding: 6px 10px 10px 10px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.gradient-bar-horizontal {
+  width: 100%;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #888, #ccc); /* placeholder antes de pintar dinámico */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: crosshair;
+  pointer-events: auto;
+}
+
+/* Ocultar el canvas de gradiente (ya tenemos el dual-slider-container con el gradiente) */
+#dynamic-gradient-canvas {
+  display: none;
+}
+
+/* Dual slider integrado (no overlay) - sliders debajo del canvas */
+.legend-dual-slider-wrapper {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.dual-slider-container {
+  position: relative;
+  width: 100%;
+  height: 22px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #888, #ccc); /* Placeholder hasta que se cargue el gradiente dinámico */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: default;
+}
+
+.dual-slider-container input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  margin: 0;
+  width: 100%;
+  height: 22px;
+  cursor: default;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto; /* Habilitar para poder interceptar eventos */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dual-slider-container input[type=range]:active {
+  cursor: grabbing;
+}
+
+.dual-slider-container input[type=range]::-webkit-slider-thumb {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.dual-slider-container input[type=range]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+.dual-slider-container input[type=range]::-moz-range-thumb {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.dual-slider-container input[type=range]::-moz-range-thumb:active {
+  cursor: grabbing;
+}
+
+.dual-slider-container .low {
+  z-index: 5; /* Mayor prioridad inicial para el low */
+}
+
+.dual-slider-container .high {
+  z-index: 4;
+}
+
+.dual-slider-container input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  border: none;
+  pointer-events: auto; /* Habilitar para interceptar */
+}
+
+.dual-slider-container input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  border: none;
+  pointer-events: auto; /* Habilitar para interceptar */
+}
+
+.dual-slider-container input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 24px;
+  background: linear-gradient(180deg, #ffffff, #f0f0f0);
+  border: 2px solid var(--primary-brand-color, #5a1b30);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+  cursor: grab;
+  transition: transform .12s, box-shadow .12s;
+  pointer-events: auto; /* Solo el thumb es interactivo */
+}
+
+.dual-slider-container input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 24px;
+  background: linear-gradient(180deg, #ffffff, #f0f0f0);
+  border: 2px solid var(--primary-brand-color, #5a1b30);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+  cursor: grab;
+  pointer-events: auto; /* Solo el thumb es interactivo */
+}
+
+/* Estilos específicos para móvil */
+@media (max-width: 768px) {
+  .dual-slider-container {
+    height: 28px; /* Más alto en móvil para mejor toque */
+    margin-bottom: 8px;
+  }
+  
+  .dual-slider-container input[type=range] {
+    height: 28px;
+    /* Asegurar que los eventos táctiles funcionen */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  .dual-slider-container input[type=range]::-webkit-slider-thumb {
+    width: 20px; /* Thumb más grande para móvil */
+    height: 28px;
+    border-width: 3px;
+  }
+  
+  .dual-slider-container input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 28px;
+    border-width: 3px;
+  }
+  
+  .dual-slider-container input[type=range]::-webkit-slider-runnable-track {
+    height: 28px;
+  }
+  
+  .dual-slider-container input[type=range]::-moz-range-track {
+    height: 28px;
+  }
+}
+
+.dual-slider-container input[type=range]:active::-webkit-slider-thumb,
+.dual-slider-container input[type=range]:focus::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+  cursor: grabbing;
+}
+
+.dual-slider-container input[type=range]:active::-moz-range-thumb,
+.dual-slider-container input[type=range]:focus::-moz-range-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+  cursor: grabbing;
+}
+
+/* Elevar z-index cuando se está arrastrando para que sea siempre accesible */
+.dual-slider-container input[type=range]:active,
+.dual-slider-container input[type=range]:focus {
+  z-index: 5;
+}
+
+.dual-inputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+  margin-top: 4px;
+  gap: 10px;
+}
+
+.dual-inputs label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: #555;
+  font-weight: 500;
+}
+
+.dual-inputs input[type=number] {
+  width: 85px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.dual-inputs input[type=number]:focus {
+  outline: none;
+  border-color: var(--primary-brand-color, #5a1b30);
+  box-shadow: 0 0 0 2px rgba(90, 27, 48, 0.1);
+}
+
+/* Etiquetas bajo la barra horizontal (min / max) */
+.gradient-horizontal-wrapper .horizontal-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #333;
+  font-weight: 600;
+  margin-top: 2px;
+  pointer-events: none;
+}
+
+.gradient-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  pointer-events: none;
+}
+
+.gradient-scale-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.gradient-bar {
+  width: 22px;
+  height: 100%;
+  border-radius: 6px;
+  background: gray;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.gradient-values {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 18px;
+  color: #333;
+  text-align: left;
+  pointer-events: none;
+}
+@media (max-width: 768px) {
+  #gradient-container.vertical {
+    left: 5%;
+    top: 150px;
+    width: 120px;
+    height: 540px;
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .gradient-title {
+    font-size: 16px;
+  }
+
+  .gradient-bar {
+    width: 16px;
+  }
+
+  .gradient-values {
+    font-size: 12px;
+    font-weight: 800;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+#filter-info {
+  position: absolute;
+  top: calc(var(--header-height) - 45px);
+  left: 90px; /* Cambiado de 40% a 15% para mover hacia la izquierda */
+  z-index: 998;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+  width: fit-content;
+  font-size: 1.5em;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  #filter-info {
+    top: 110px;
+    left: 10%; /* Cambiado de 18% a 10% para mover más hacia la izquierda en móvil */
+    transform: translateX(-50%);
+    max-width: 90%; 
+    padding: 8px 15px; 
+    font-size: 1em; 
+  }
+}
+
+.permanent-date {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.dynamic-range {
+  color: #333;
+  font-size: 0.9em;
+}
+
+/* Variable selection panel */
+.variable-selection {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.5s ease;
+}
+
+.variable-selection h4 {
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.variable-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.variable-toggle {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.variable-toggle:hover {
+  border-color: #007bff;
+  background: #f0f7ff;
+}
+
+.variable-toggle.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.variable-toggle input[type="checkbox"] {
+  margin: 0;
+}
+
+/* Historical charts container */
+.historical-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease;
+}
+
+.historical-wrapper .chart-container {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+
+.historical-wrapper canvas {
+  transition: all 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stats table styling */
+.stats-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 20px;
+}
+
+.stats-table th {
+  background: #f8f9fa;
+  padding: 15px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.stats-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.stats-table tr:hover td {
+  background: #f8f9fa;
+}
+
+/* Escala/gradiente vertical */
+#gradient-container.vertical{
+  position: fixed;          
+  left: 90px;               
+  top: 150px;              
+  width: 250px;
+  height: calc(100vh - 170px);      
+  max-height: calc(100vh - 170px);  
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  font-family: "Poppins", sans-serif;
+}
+
+.gradient-scale-wrapper{ height: 100%; }
+.gradient-bar{ width: 22px; height: 100%; }   /* quita alturas fijas */
+.gradient-values{ height: 100%; }
+
+/* Ajuste en móvil: navbar y panel usan ~56 px */
+@media (max-width:768px){
+  #gradient-container.vertical{
+    left: 8px;
+    top: 120 px;                           /* debajo del header móvil */
+    width: 120px;
+    height: calc(100vh - 170px);          /* sin exceder viewport */
+    max-height: calc(100vh - 170px);
+    background-color: rgba(255,255,255,0.6);
+  }
+  .gradient-bar{ width: 16px; }
+  .gradient-title{ font-size: 16px; }
+  .gradient-values{ font-size: 12px; font-weight: 800; }
+}
+
+/* Estilos para el dashboard histórico */
+#historial-dashboard {
+  position: relative;              /* evitar desplazar fuera del flujo */
+  left: var(--sidebar-width);      /* alineado con el borde derecho del sidebar */
+  margin: 140px 0 40px 0;          /* sustituye top:150px con margen superior controlado */
+  width: calc(100% - var(--sidebar-width)); /* desde sidebar hasta borde derecho */
+  max-width: none;                 /* permitir ancho completo */
+  background-color: #ffffff;
+  min-height: auto;                /* crecer según contenido */
+  max-height: calc(100vh - 200px); /* altura máxima para permitir scroll */
+  overflow-y: auto;                /* habilitar scroll vertical por defecto */
+  overflow-x: hidden;              /* evitar scroll horizontal */
+  transition: margin .3s ease, padding .3s ease, background .3s ease;
+  animation: fadeIn .5s ease;
+  box-sizing: border-box;
+}
+
+/* Estado sin contenido: mantener scroll pero sin contenido */
+#historial-dashboard.historial-empty {
+  overflow-y: auto;
+  min-height: 300px;
+}
+
+/* Forzar scroll cuando hay contenido suficiente */
+#historial-dashboard.force-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Permitir scroll automático cuando el contenido lo requiera */
+#historial-dashboard.no-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.dashboard-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.location-selector,
+.data-type-selector {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Instrucciones de uso del historial */
+.usage-instructions {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-left: 4px solid var(--primary-brand-color);
+  border-radius: 8px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.usage-instructions h3 {
+  color: var(--primary-brand-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.usage-instructions ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #333;
+}
+
+.usage-instructions li {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.usage-instructions li:last-child {
+  margin-bottom: 0;
+}
+
+/* Asegurar que el combobox ocupe todo el ancho disponible */
+#hist-combobox {
+  width: 100%;
+  position: relative;
+}
+
+/* Labels profesionales */
+.location-selector label,
+.data-type-selector label {
+  font-weight: 600;
+  color: var(--primary-brand-color);
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.dashboard-content {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 30px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* Variable Selection Grid */
+.variables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.variable-toggle {
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #5a1b30;
+}
+
+.variable-toggle:hover {
+  border-color: #5a1b30;
+  background: #fff9f5;
+}
+
+.variable-toggle.active {
+  background: #5a1b30;
+  color: #ffffff;
+  border-color: #5a1b30;
+}
+
+.variable-toggle .icon {
+  font-size: 24px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.variable-toggle .label {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Selectors Styling */
+#historial-dashboard select.form-control {
+  height: 48px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  padding: 0 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  cursor: pointer;
+  color: #333;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+#historial-dashboard select.form-control:hover {
+  border-color: #c19862be;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+#historial-dashboard select.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(90, 27, 48, 0.2);
+  border-color: #5a1b30;
+  outline: none;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Content Area */
+.content-wrapper {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.visualization-container {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.stats-container {
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 0 0 15px 15px;
+  margin-top: 20px;
+  clear: both;
+}
+
+.stats-container h4 {
+  color: #5a1b30;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.stats-table-wrapper {
+  overflow-x: auto;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.stats-table th {
+  background: #f8f9fa;
+  padding: 15px;
+  font-weight: 600;
+  color: #5a1b30;
+  border-bottom: 2px solid #e0e0e0;
+  text-align: left;
+}
+
+.stats-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.stats-table tr:hover td {
+  background: #fff9f5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  #historial-dashboard {
+    position: relative !important;
+    top: 30 !important;
+    left: 0 !important;
+    margin: 80px 0 24px 0 !important; /* Margen superior ajustado para header móvil */
+    width: 100% !important;
+    padding: 15px 12px 36px !important; /* padding más compacto */
+    max-height: none !important; /* permitir crecer naturalmente */
+    overflow: visible !important; /* dejar que el scroll sea del body si hace falta */
+    box-shadow: none !important; /* simplificar en pantallas pequeñas */
+    border-radius: 0 !important; /* flush edges */
+    background-color: #f8f9fa !important; /* Fondo visible */
+    display: block !important; /* Asegurar visibilidad */
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    background: #ffffff !important;
+    display: grid !important;
+  }
+  
+  .variables-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .dashboard-content {
+    padding: 15px;
+    background: #ffffff !important;
+    display: block !important;
+  }
+}
+
+#hist-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Estilos para la vista histórica */
+.historical-wrapper {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.historical-wrapper .card {
+  border: none;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.historical-wrapper .card-header {
+  background: linear-gradient(45deg, #f8f9fa, #ffffff);
+  border-bottom: 2px solid #f0f0f0;
+  padding: 15px 20px;
+}
+
+.historical-wrapper .card-title {
+  color: #333;
+  font-weight: 600;
+  margin: 0;
+}
+
+.historical-wrapper .table {
+  margin: 0;
+}
+
+.historical-wrapper .table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  border-top: none;
+}
+
+.historical-wrapper .table td {
+  vertical-align: middle;
+}
+
+.historical-wrapper .table tr:hover {
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .historical-wrapper {
+    padding: 10px;
+  }
+  
+  .historical-wrapper .card-body {
+    padding: 15px;
+  }
+}
+
+/* === Variable tiles estilo "tarjeta" === */
+.variables-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+}
+
+.variable-toggle{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:16px 14px;
+  border-radius:16px;
+  border:1.5px solid #E6E6E6;
+  background:#ffffff;
+  color:#5a1b30;
+  box-shadow:0 1px 6px rgba(0,0,0,.06);
+  transition:transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.variable-toggle .icon{font-size:28px; line-height:1}
+.variable-toggle .label{
+  font-weight:500; 
+  font-size:15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.variable-toggle:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(0,0,0,.10);
+  border-color:#c19862;
+}
+
+/* Activo con gradiente tipo tarjeta seleccionada */
+.variable-toggle.active{
+  background:#5a1b30;
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 8px 22px rgba(97, 44, 59, .25);
+}
+
+/* === Contenedor de múltiples gráficas === */
+.charts-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+  width: 100%;
+  min-height: 300px;
+  padding: 10px 0;
+}
+
+/* Grid de una columna para gráficas individuales */
+.charts-grid.individual {
+  grid-template-columns: 1fr;
+  gap: 25px;
+}
+.chart-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:14px;
+  padding:15px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  animation:fadeInUp .35s ease both;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* asegurar posicionamiento para pseudo overrides */
+}
+@keyframes fadeInUp{
+  from{opacity:0; transform:translateY(8px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* Altura mejorada para mejor visualización */
+.chart-card canvas{ 
+  height: 280px !important; 
+  flex: 1;
+  min-height: 280px;
+}
+@media (max-width: 768px){
+  .charts-grid{
+    grid-template-columns: 1fr !important; /* Forzar una sola columna en móvil */
+    gap: 20px;
+    padding: 15px 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .chart-card{ 
+    padding: 15px; 
+    min-height: 280px;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .chart-card canvas{
+    height: 240px !important;
+    min-height: 240px;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  #historial-dashboard {
+    left: 0 !important;
+    width: 100% !important;
+    padding: 12px 12px 32px !important;
+    margin: 120px 0 20px 0 !important;
+    overflow-x: hidden !important;
+  }
+}
+
+
+/* Contenedor visualización */
+.visualization-container{ padding:12px !important; }
+
+/* Contenedor del contenido del historial */
+#hist-content {
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Asegurar que el host de las gráficas tenga espacio suficiente */
+#chartsHost {
+  width: 100%;
+  min-height: 300px;
+  margin-bottom: 20px;
+}
+
+/* Botones de variables */
+.variable-toggle{
+  color:#000;                 /* texto negro por defecto */
+}
+.variable-toggle .label,
+.variable-toggle .icon{
+  color:inherit;
+}
+.variable-toggle .label{
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+.variable-toggle.active{
+  color:#fff;                 /* texto blanco cuando esté activa */
+}
+
+/* Contenedor de gráficas en cuadrícula compacta */
+.charts-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:16px;
+}
+.chart-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  animation:fadeInUp .5s ease;
+}
+.chart-card canvas{
+  height:300px !important;    /* reduce altura */
+  max-height:300px;
+}
+@keyframes fadeInUp{
+  from{opacity:0; transform:translateY(8px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* Combobox styles for municipality search */
+#hist-combobox {
+  width: 100%;
+}
+
+#hist-combobox input.form-control {
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  position: relative;
+  z-index: 2;
+  color: #000;
+  background-color: #fff;
+  border: 2px solid var(--medium-gray);
+  border-radius: 8px;
+  padding: 6px 12px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+#hist-combobox input.form-control:focus {
+  border-color: var(--secondary-brand-color);
+  box-shadow: 0 0 0 3px rgba(193, 152, 98, 0.2);
+}
+
+/* Dropdown de opciones */
+#hist-combobox-list {
+  position: fixed;
+  z-index: 2;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+/* Opciones individuales */
+#hist-combobox-list li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#hist-combobox-list li:hover {
+  background: #f0f0f0;
+}
+
+/* Opción activa (con flechas) */
+#hist-combobox-list li.active {
+  background: var(--secondary-brand-color);
+  color: #fff;
+}
+
+/* Mejorar estilo del combobox y select de tipo */
+#hist-combobox input.form-control,
+#hist-tipo-select {
+  width: 100%;
+  height: 45px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  transition: all 0.3s ease;
+  color: #333;
+  box-sizing: border-box;
+}
+
+#hist-combobox input.form-control:focus,
+#hist-tipo-select:focus {
+  outline: none;
+  border-color: var(--secondary-brand-color);
+  box-shadow: 0 0 0 3px rgba(193, 152, 98, 0.1);
+}
+
+#hist-combobox input.form-control::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+/* Mejorar select de tipo de datos */
+#hist-tipo-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+  appearance: none;
+}
+
+/* Estilos para gráficas individuales y botones de descarga */
+.chart-card.individual-chart {
+  position: relative;
+  margin-bottom: 20px;
+  padding-top: 55px; /* Espacio para el botón de descarga */
+}
+
+/* Override: eliminar cualquier pseudo decorativo que interfiera visualmente */
+.modal-content .chart-card::before,
+.modal-content .chart-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+.download-btn {
+  position: absolute;
+  top: 15px;
+  margin: 15px;
+  right: 15px;
+  z-index: 10;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  background: var(--secondary-brand-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  height: 28px;
+  min-width: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  opacity: 0.85;
+}
+
+.download-btn:hover {
+  background: var(--primary-brand-color);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(90, 27, 48, 0.25);
+  opacity: 1;
+}
+
+.download-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(90, 27, 48, 0.2);
+}
+
+.download-btn i {
+  font-size: 12px;
+}
+
+/* Hint bajo la barra de gradiente */
+.gradient-hint {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 11px;
+  font-family: 'Poppins', sans-serif;
+  color: #555;
+  letter-spacing: .4px;
+  user-select: none;
+  opacity: .9;
+}
+@media (max-width: 768px) {
+  .gradient-hint { font-size: 10px; }
+}
+
+/* ===== Summary Blocks para modales de estaciones / municipios ===== */
+.summary-block {
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  padding: 18px 22px 24px 22px;
+  margin: 10px 0 26px 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+.summary-block .summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.summary-block .summary-header h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #5a1b30;
+  margin: 0;
+  letter-spacing: .5px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.summary-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  background: linear-gradient(145deg,#ffffff,#fafafa);
+  border: 1px solid #e9e4e4;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.05), 0 1px 0 rgba(255,255,255,.6) inset;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+  min-height: 78px;
+}
+.summary-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 28%, rgba(90,27,48,.08), transparent 70%);
+  pointer-events: none;
+}
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px -4px rgba(90,27,48,.18);
+}
+.summary-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px -2px rgba(0,0,0,.28);
+}
+.summary-icon.bg-red { background: linear-gradient(135deg,#d63031,#5a1b30); }
+.summary-icon.bg-blue { background: linear-gradient(135deg,#0984e3,#5a1b30); }
+.summary-icon.bg-green { background: linear-gradient(135deg,#00b894,#5a1b30); }
+.summary-icon.bg-orange { background: linear-gradient(135deg,#e17055,#5a1b30); }
+.summary-icon.bg-gray { background: linear-gradient(135deg,#636e72,#5a1b30); }
+.summary-icon.bg-slate { background: linear-gradient(135deg,#6c5ce7,#5a1b30); }
+
+.summary-body { display:flex; flex-direction:column; gap:4px; }
+.summary-name { font-size:13px; letter-spacing:.4px; color:#555; font-weight:600; text-transform:uppercase; }
+.summary-value { font-size:18px; font-weight:600; color:#222; letter-spacing:.5px; }
+
+/* Tabla de contaminantes (chem) dentro de summary-block */
+.stats-table.styled-table { margin-top: 10px; }
+.stats-table.styled-table thead th { background:#5a1b30; color:#fff; border:none; }
+.stats-table.styled-table tbody tr:nth-child(even){ background:#faf8f8; }
+.stats-table.styled-table tbody tr:hover td { background:#f1ecec; }
+
+@media (max-width: 768px) {
+  .summary-grid { grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); }
+  .summary-card { padding: 12px 12px 12px 14px; min-height:70px; }
+  .summary-card:hover { transform: translateY(-2px); }
+  .summary-icon { width:40px; height:40px; font-size:19px; }
+  .summary-value { font-size:16px; }
+  .summary-block { padding:16px 16px 20px 16px; }
+}
+
+/* Ajustes de tooltips Chart.js (modo claro flotante) */
+.chartjs-tooltip {
+  background: rgba(255,255,255,.97) !important;
+  color: #222 !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 22px rgba(0,0,0,.15) !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 12px !important;
+  padding: 8px 10px !important;
+}
+
+/* Leyenda de Chart.js (cuando se use display) */
+.chart-legend-list {
+  display:flex; flex-wrap:wrap; gap:10px; padding:0; margin:0 0 10px 0; list-style:none;
+  font-family:'Poppins',sans-serif; font-size:12px;
+}
+.chart-legend-item { display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #eee; padding:4px 8px; border-radius:8px; }
+.chart-legend-color { width:14px; height:14px; border-radius:4px; box-shadow:0 0 0 1px rgba(0,0,0,.15); }
+
+/* Botón CSV incrustado en headers de summary */
+.summary-block .download-btn { position:relative; top:auto; right:auto; margin:0 0 0 auto; }
+
+
+/* Responsive para dashboard header */
+@media (max-width: 768px) {
+  .dashboard-header {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  #hist-combobox input.form-control,
+  #hist-tipo-select {
+    width: 100%;
+    height: 42px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+  }
+  
+  .chart-card.individual-chart {
+    margin-bottom: 16px;
+  }
+  
+  .download-btn {
+    top: 10px;
+    right: 10px;
+    padding: 5px 8px;
+    font-size: 11px;
+    height: 26px;
+    min-width: 26px;
+  }
+  
+  .download-btn i {
+    font-size: 11px;
+  }
+}
+
+#map-top-bar {
+  position: fixed;
+  top: calc(var(--header-height) + 20px);
+  left: calc(var(--sidebar-width) + 20px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: left 0.3s ease;
+  width: 300px;
+}
+
+
+
+/* Ajustar cuando el menú lateral está expandido */
+.side-menu.expanded + #main-content #map-top-bar {
+  left: 210px; /* 200px del menú expandido + 10px de margen */
+}
+
+/* Selector con tarjetita */
+#map-top-bar #municipio-map-control {
+  background: rgba(255,255,255,.95);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  width: 100%;
+}
+
+#map-top-bar #municipio-map-control label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+#map-combobox,
+#hist-combobox {
+  width: 100%;
+}
+
+#map-combobox input.form-control,
+#hist-combobox input.form-control {
+  height: 40px;
+  font-size: 15px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  width: 100%;
+  box-shadow: none;
+}
+
+#map-combobox input.form-control:focus,
+#hist-combobox input.form-control:focus {
+  border-color: #c19862be;
+  outline: none;
+}
+
+/* Listas */
+
+/* ===== ICA Legend Styles (added) ===== */
+.ica-legend { width: 100%; }
+.ica-legend table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; }
+.ica-legend td { padding: 6px 8px; }
+.ica-legend b { font-weight: 700; }
+
+/* Compact legend inside chart cards */
+.ica-legend-mini { display: block; }
+.chart-card .ica-legend-mini table { font-size: 11px; }
+.ica-legend-mini td { padding: 3px 6px; border-radius: 2px; }
+
+/* Make legend responsive: stack labels on very small screens */
+@media (max-width: 420px) {
+  .ica-legend table, .ica-legend-mini table { font-size: 12px; }
+  .ica-legend table td, .ica-legend-mini table td { padding: 6px 4px; }
+}
+
+/* Small tweak: ensure legend doesn't overflow chart card */
+.chart-card .ica-legend-mini { max-width: 100%; overflow: hidden; }
+
+/* End ICA Legend Styles */
+#map-combobox-list,
+#hist-combobox-list {
+  background: white;
+  border: 1px solid #cf1717;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  z-index: 3000;
+}
+
+#map-combobox-list li,
+#hist-combobox-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+#map-combobox-list li:hover,
+#hist-combobox-list li:hover {
+  background-color: #f5f5f5;
+}
+
+#map-combobox-list li.active,
+#hist-combobox-list li.active {
+  background-color: #e0e0e0;
+  color: white;
+}
+
+
+
+/* Responsive para móviles */
+@media (max-width: 900px) {
+  #map-top-bar {
+    top: 120px; /* Si la navbar se reduce en móvil */
+    left: 10px;
+    width: calc(100% - 20px);
+    max-width: 250px;
+  }
+  
+  #municipio-map-control {
+    width: 100%;
+  }
+}
+
+/* Responsive: si la pantalla es angosta, apila logo y selector */
+@media (max-width: 768px) {
+  #map-top-bar {
+    top: 120px;        /* reduce si tu navbar también reduce */
+    left: 10px;
+    right: 10px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Tarjeta contenedora estilo “tabla bonita” */
+.table-card{
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+
+/* Header de la tarjeta */
+.table-card__header{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.table-card__title{
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Botón descargar */
+.btn-download{
+  background-color: #007bff;
+  color:#fff;
+  border:0;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor:pointer;
+}
+.btn-download:hover{ background:#0056b3; }
+
+/* Tabla base */
+.data-table{
+  width:100%;
+  border-collapse: collapse;
+  font-size: .95rem;
+  background:#fff;
+}
+
+/* Encabezado */
+.data-table thead th{
+  text-align:left;
+  padding:10px;
+  background:#f5f5f5;
+  font-weight:600;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+/* Celdas */
+.data-table td{
+  padding:10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Zebra */
+.data-table--zebra tbody tr:nth-child(odd){ background:#fcfcfc; }
+.data-table--zebra tbody tr:nth-child(even){ background:#f0f8ff; }
+
+/* ==== Ajuste fino de posición de la escala (override final) ==== */
+:root {
+  /* Posición de la escala */
+  --scale-bottom-desktop: 20px;  /* altura desde abajo en desktop */
+  --scale-right-desktop: 30px;   /* separación derecha en desktop */
+  --scale-bottom-mobile: 110px;  /* altura desde abajo en móvil (arriba de map-legend) */
+}
+
+#app .ol-scale-line,
+.ol-scale-line.override-position,
+.ol-scale-line {
+  position: absolute !important;
+  bottom: var(--scale-bottom-desktop) !important;
+  left: 1% !important; /* Cambiado de right a left para mover hacia la izquierda */
+  right: auto !important;
+  transform: translateX(-50%) !important; /* Centrar desde la posición left */
+  padding: 4px 8px 6px 8px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: "Poppins", sans-serif !important;
+  z-index: 1600 !important;
+}
+
+@media (max-width: 768px) {
+  :root { --scale-bottom-mobile: 30px; }
+
+  /* En móvil: centrada en 50% para crecer desde el centro */
+  #app .ol-scale-line,
+  .ol-scale-line.override-position,
+  .ol-scale-line {
+    bottom: var(--scale-bottom-mobile) !important;
+    left: 50% !important; /* Centrar en el medio de la pantalla */
+    right: auto !important;
+    transform: translateX(-50%) !important; /* Centrar desde el punto medio */
+    transform-origin: center center !important; /* Crecer desde el centro */
+  }
+  
+  /* Asegurar que el contenido interno también crezca desde el centro */
+  .ol-scale-line-inner,
+  .ol-scale-line-body {
+    transform-origin: center center !important;
+  }
+}
+
+/* Responsive en modales estrechos */
+@media (max-width:768px){
+  .table-card{ padding:12px; }
+  .table-card__title{ font-size:1rem; }
+  .data-table{ font-size:.9rem; }
+}
+
+/* Nueva leyenda con estilo MeteorologiaGit */
+.legend { 
+    position: absolute; 
+    bottom: 20px; 
+    right: 20px; 
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px); 
+    border-radius: 10px; 
+    padding: 15px; 
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); 
+    z-index: 2000; 
+    width: 250px;
+    cursor: pointer;
+    user-select: none;
+    font-family: "Poppins", sans-serif;
+}
+
+/* === Mobile: botón de descarga sólo con ícono dentro de modales / popups === */
+@media (max-width:768px){
+  .modal-content .download-btn,
+  .summary-block .download-btn,
+  .chart-card .download-btn {
+    font-size:0 !important;            /* oculta el texto 'Descargar CSV' */
+    width:38px !important;
+    min-width:38px !important;
+    padding:8px !important;
+    justify-content:center !important;
+    gap:0 !important;
+  }
+  /* Oculta cualquier ícono interno existente para evitar doble flecha */
+  .modal-content .download-btn i,
+  .summary-block .download-btn i,
+  .chart-card .download-btn i { display:none !important; }
+  .modal-content .download-btn::before,
+  .summary-block .download-btn::before,
+  .chart-card .download-btn::before {
+    content:"\f019";                  /* icono FontAwesome descarga */
+    font-family:"Font Awesome 5 Free";
+    font-weight:900;
+    font-size:18px;                    /* tamaño del icono */
+    line-height:1;
+    display:inline-block;
+  }
+}
+
+/* Override global: en modales NO usar pseudo ::before en botones de descarga */
+.modal-content .download-btn::before {
+  content: none !important;
+  display: none !important;
+}
+
+.legend-title { 
+    font-size: 14px; 
+    font-weight: 600; 
+    margin-bottom: 10px; 
+    color: #333; 
+    text-align: center; 
+}
+
+.legend-gradient { 
+    width: 100%; 
+    height: 20px; 
+    border-radius: 5px; 
+    position: relative;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-labels { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 5px; 
+    font-size: 11px; 
+    color: #666; 
+}
+
+.legend-labels span { 
+    flex: 1; 
+    text-align: center; 
+}
+
+.legend-labels span:first-child { 
+    text-align: left; 
+}
+
+.legend-labels span:last-child { 
+    text-align: right; 
+}
+
+/* Filter indicator */
+.filter-indicator {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 4px;
+    height: 30px;
+    background: #ff4444;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.filter-indicator.active {
+    opacity: 1;
+}
+@media (max-width: 768px) {
+  .legend {
+    bottom: 10px;
+    right: 10px;
+    width: 200px;
+    padding: 12px;
+  }
+  
+  .legend-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .legend-gradient {
+    height: 16px;
+  }
+  
+  .legend-labels {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+}
+
+
+/* Scrollbars del index */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 12px;
+  height: 8px;
+}
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #c19862be !important;
+}
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #5a1b30 !important;   /* fuerza el color */
+  border-radius: 4px;
+}
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: #8b294a !important;
+}
+#historial-dashboard,
+#controlsPanel {
+  /* Evita personalizar scroll interno para no incentivar doble barra en móvil */
+  scrollbar-width: none;
+  scrollbar-color: auto;
+}
+
+/* Scrollbars del historial */
+#historial-dashboard::-webkit-scrollbar {
+  width: 12px;
+  height: 8px;
+}
+#historial-dashboard::-webkit-scrollbar-track {
+  background: #c1986256 !important;
+}
+#historial-dashboard::-webkit-scrollbar-thumb {
+  background: #5a1b30 !important;
+  border-radius: 4px;
+}
+#historial-dashboard::-webkit-scrollbar-thumb:hover {
+  background: #8b294a !important;
+}
+#historial-dashboard {
+  scrollbar-width: auto;
+  scrollbar-color: #5a1b30 #c1986256;
+}
+
+/* Scrollbars de los combobox (mapa e historial) */
+#map-combobox-list::-webkit-scrollbar,
+#hist-combobox-list::-webkit-scrollbar {
+  width: 12px;
+  height: 8px;
+}
+#map-combobox-list::-webkit-scrollbar-track,
+#hist-combobox-list::-webkit-scrollbar-track {
+  background: #c19862be !important;  /* mismo tono semitransparente */
+}
+#map-combobox-list::-webkit-scrollbar-thumb,
+#hist-combobox-list::-webkit-scrollbar-thumb {
+  background: #5a1b30 !important;   /* color vino */
+  border-radius: 4px;
+}
+#map-combobox-list::-webkit-scrollbar-thumb:hover,
+#hist-combobox-list::-webkit-scrollbar-thumb:hover {
+  background: #8b294a !important;   /* tono más claro al pasar el mouse */
+}
+#map-combobox-list,
+#hist-combobox-list {
+  scrollbar-width: auto;
+  scrollbar-color: #5a1b30 #c19862be;
+}
+
+/* Scrollbar del Weather Control */
+#weather-controls::-webkit-scrollbar {
+  width: 20px;
+  height: 8px;
+}
+#weather-controls::-webkit-scrollbar-track {
+  background: #c1986256 !important;  /* fondo semitransparente */
+}
+#weather-controls::-webkit-scrollbar-thumb {
+  background: #5a1b30 !important;    /* color vino */
+  border-radius: 4px;
+}
+#weather-controls::-webkit-scrollbar-thumb:hover {
+  background: #8b294a !important;    /* más claro al pasar el mouse */
+}
+#weather-controls {
+  scrollbar-width: auto;
+  scrollbar-color: #5a1b30 #c1986256;
+}
+
+/* Selects estilizado del Historial */
+#hist-tipo-select {
+  height: 50px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  width: 100%;
+  background-color: #ffffffbe;
+  color: #333;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+#hist-tipo-select:focus {
+  border-color: #c19862be;
+  outline: none;
+  box-shadow: none;
+}
+
+/* ===== Estilos para tooltips de municipios (popovers) ===== */
+/* Tooltip/popover limpio como en el ejemplo - fondo blanco, texto negro, sin flecha */
+.popover {
+  background-color: #ffffff !important;
+  border: 1px solid #cccccc !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+  font-family: "Poppins", sans-serif !important;
+  max-width: 200px !important;
+  min-width: 80px !important;
+  padding: 0 !important;
+}
+
+.popover-content {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  padding: 4px 8px !important;
+  text-align: center !important;
+  border-radius: 4px !important;
+  line-height: 1.3 !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+/* Ocultar la flecha del popover para un look limpio */
+.popover .arrow,
+.popover .popover-arrow,
+.popover:before,
+.popover:after {
+  display: none !important;
+  border: none !important;
+}
+
+/* Estilos específicos para popovers top (encima del punto) */
+.popover.top {
+  margin-bottom: 10px !important;
+}
+
+.popover.top .popover-content {
+  border-radius: 4px !important;
+}
+
+/* Asegurar que el popover esté bien posicionado */
+.popover {
+  z-index: 10000 !important;
+}
+/* Leyenda de simbología - POSICIÓN CORREGIDA */
+.map-legend {
+  position: absolute;
+  bottom: 150px; /* Más arriba para no chocar con gradient */
+  left: calc(var(--sidebar-width) + 20px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 3010; /* Por encima del gradient-container que tiene z-index: 3005 */
+  font-family: 'Poppins', sans-serif;
+  min-width: 220px;
+}
+
+.legend-header {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c19862;
+}
+
+.legend-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5a1b30;
+}
+
+.legend-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-symbol {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.legend-item span {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-legend {
+    left: 10px !important;
+    bottom: 180px; /* Más espacio en móvil */
+    min-width: 180px;
+    padding: 12px;
+    z-index: 4500; /* Aún más alto en móvil */
+  }
+  
+  .legend-header h4 {
+    font-size: 12px;
+  }
+  
+  .legend-item span {
+    font-size: 11px;
+  }
+  
+  .legend-symbol {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* DENTRO DE: estilos.css (al final) */
+
+/* Por defecto, el botón "Ver más" está oculto en PC */
+#read-more-btn {
+  display: none;
+  text-decoration: underline;
+  color: white;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  /* En móvil, ocultamos el texto extra y mostramos el botón */
+  #more-text {
+    display: none;
+  }
+  #read-more-btn {
+    display: inline-block; /* O block, según prefieras */
+  }
+  /* Cuando se active, mostramos el texto */
+  body.show-more .banner-subtitle #more-text {
+    display: inline;
+  }
+}
+
+
+/* --- Accessibility Features Styles --- */
+
+/* Large Text */
+body.large-text {
+  font-size: 120% !important;
+}
+
+body.large-text h1,
+body.large-text h2,
+body.large-text h3,
+body.large-text h4,
+body.large-text p,
+body.large-text span,
+body.large-text a,
+body.large-text button,
+body.large-text label {
+  font-size: 120% !important;
+}
+
+/* Small Text */
+body.small-text {
+  font-size: 85% !important;
+}
+
+body.small-text h1,
+body.small-text h2,
+body.small-text h3,
+body.small-text h4,
+body.small-text p,
+body.small-text span,
+body.small-text a,
+body.small-text button,
+body.small-text label {
+  font-size: 85% !important;
+}
+
+/* Large Spacing */
+body.large-spacing {
+  letter-spacing: 0.1em !important;
+  line-height: 1.8 !important;
+}
+
+body.large-spacing p,
+body.large-spacing span,
+body.large-spacing a {
+  letter-spacing: 0.1em !important;
+  line-height: 1.8 !important;
+}
+
+/* Small Spacing */
+body.small-spacing {
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+}
+
+body.small-spacing p,
+body.small-spacing span,
+body.small-spacing a {
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+}
+
+/* Inverted Colors */
+body.inverted {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body.inverted img,
+body.inverted video,
+body.inverted .ol-layer {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Grayscale */
+body.grayscale {
+  filter: grayscale(100%);
+}
+
+/* Underline Links */
+body.underline-links a {
+  text-decoration: underline !important;
+}
+
+/* Responsive design for accessibility logo */
+@media (max-width: 768px) {
+  .accesibility-logo {
+    right: -15px; /* Adjust position for mobile */
+    height: 50px;
+    width: 50px;
+  }
+}
+
+/* Large Cursor */
+body.large-cursor,
+body.large-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="10" fill="black" stroke="white" stroke-width="2"/></svg>') 16 16, auto !important;
+}
+
+body.large-cursor a,
+body.large-cursor button,
+body.large-cursor input,
+body.large-cursor select {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="10" fill="blue" stroke="white" stroke-width="2"/></svg>') 16 16, pointer !important;
+}
+

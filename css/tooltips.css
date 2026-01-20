@@ -1,0 +1,233 @@
+/*--------------------------------------------------------------------*/
+/*---------------------------tooltip clean style---------------------*/
+.tooltip-top, .tooltip-bottom, .tooltip-left, .tooltip-right, 
+.tooltip-top-right, .tooltip-bottom-right, .tooltip-top-left, .tooltip-bottom-left{
+	position: relative;
+	max-width: 200px; /* tamaño como en el ejemplo */
+	min-width: 80px; 
+  color: #000000; /* texto negro como en la imagen */
+  background: #ffffff; /* fondo blanco como en la imagen */
+  border: 1px solid #cccccc; /* borde gris suave */
+  border-radius: 4px; /* esquinas redondeadas como en la imagen */
+	padding: 4px 8px; /* padding compacto */
+	font-size: 12px; /* tamaño normal */
+	font-weight: 400; /* peso normal */
+	text-shadow: none; /* sin sombra de texto */
+	box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* sombra suave */
+	font-family: "Poppins", sans-serif;
+	line-height: 1.3;
+	white-space: nowrap;
+}
+
+/* Ocultar todas las flechas para un look limpio como en el ejemplo */
+.tooltip-top:before, .tooltip-top:after,
+.tooltip-bottom:before, .tooltip-bottom:after,
+.tooltip-left:before, .tooltip-left:after,
+.tooltip-right:before, .tooltip-right:after,
+.tooltip-top-right:before, .tooltip-top-right:after,
+.tooltip-bottom-right:before, .tooltip-bottom-right:after,
+.tooltip-top-left:before, .tooltip-top-left:after,
+.tooltip-bottom-left:before, .tooltip-bottom-left:after {
+	display: none !important;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------top-------------------------------------*/
+.tooltip-top:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -9px;
+  width: 0; height: 0;
+  border-top: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-top:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -7px;
+  width: 0; height: 0;
+  border-top: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------bottom----------------------------------*/
+.tooltip-bottom:before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -9px;
+  width: 0; height: 0;
+  border-bottom: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-bottom:after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -7px;
+  width: 0; height: 0;
+  border-bottom: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------left------------------------------------*/
+.tooltip-left:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -9px;
+  width: 0; height: 0;
+  border-left: 12px solid #FFFFFF;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+}
+.tooltip-left:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -7px;
+  width: 0; height: 0;
+  border-left: 10px solid #5a1b30; /* color de marca */
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------right-----------------------------------*/
+.tooltip-right:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -9px;
+  width: 0; height: 0;
+  border-right: 12px solid #FFFFFF;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+}
+.tooltip-right:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -7px;
+  width: 0; height: 0;
+  border-right: 10px solid #5a1b30; /* color de marca */
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------top-right-------------------------------*/
+.tooltip-top-right:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  margin-left: 0px;
+  width: 0; height: 0;
+  border-top: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-top-right:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  margin-left: 2px;
+  width: 0; height: 0;
+  border-top: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}
+
+
+/*--------------------------------------------------------------------*/
+/*----------------------------bottom-right----------------------------*/
+.tooltip-bottom-right:before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 0%;
+  margin-left: 0px;
+  width: 0; height: 0;
+  border-bottom: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-bottom-right:after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 0%;
+  margin-left: 2px;
+  width: 0; height: 0;
+  border-bottom: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*---------------------------top-left--------------------------------*/
+.tooltip-top-left:before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0%;
+  margin-right: 0px;
+  width: 0; height: 0;
+  border-top: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-top-left:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0%;
+  margin-right: 2px;
+  width: 0; height: 0;
+  border-top: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}
+
+/*--------------------------------------------------------------------*/
+/*----------------------------bottom-left----------------------------*/
+.tooltip-bottom-left:before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 0%;
+  margin-right: 0px;
+  width: 0; height: 0;
+  border-bottom: 12px solid #FFFFFF;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+}
+.tooltip-bottom-left:after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 0%;
+  margin-right: 2px;
+  width: 0; height: 0;
+  border-bottom: 10px solid #5a1b30; /* color de marca */
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+}

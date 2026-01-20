@@ -1,0 +1,2442 @@
+:root {
+    --primary-brand-color: #5a1b30;
+    --secondary-brand-color: #c19862be;
+    --terciary-brand-color: rgba(92, 31, 51, 0.637);
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --text-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-color: #ddd;
+    --sidebar-width: 80px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+    width: 100vw;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden !important;
+    background-color: var(--light-gray);
+    max-width: 100vw;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide landing page when map is active */
+body.map-active #banner,
+body.map-active #botones1 {
+    display: none;
+}
+
+body.map-active {
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Allow scrolling on mobile when NOT in map mode */
+@media (max-width: 768px) {
+  body:not(.map-active) {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+}
+
+body.map-active #app {
+    display: flex !important;
+    flex-grow: 1;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Map-specific styles */
+#main-content { 
+    flex-grow: 1; 
+    position: relative;
+    display: none;
+    width: calc(100% - var(--sidebar-width) - 400px); /* Quitar sidebar izquierdo Y 400px para panel derecho */
+}
+
+body.map-active #main-content {
+    display: block;
+}
+
+#map { 
+    position: absolute; 
+    top: 0; 
+    bottom: 0; 
+    width: 100%; 
+    height: 100%;
+}
+
+#map-watermark {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    height: 40px;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Enhanced Map Controls - Fixed positioning to avoid navbar overlap */
+.map-controls {
+  position: absolute;
+  top: 160px; /* raised 20px (antes 50px) */
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+  transition: top .25s ease;
+}
+
+@media (max-width: 768px) {
+  .map-controls { top: 60px; } /* raised 10px vs previous 130px */
+}
+
+.control-btn {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    color: var(--primary-brand-color);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover { 
+    background-color: var(--primary-brand-color); 
+    color: white; 
+    transform: scale(1.1); 
+}
+
+/* Back button styles */
+.back-btn {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--primary-brand-color);
+    background: var(--primary-brand-color);
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    text-decoration: none;
+    margin-top: 0; /* Eliminamos el margin-top ya que estará en la parte inferior */
+}
+
+.back-btn:hover {
+    background: #c19862be;
+    color: var(--primary-brand-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(90, 27, 48, 0.3);
+}
+
+/* Asegurar visibilidad del back-btn */
+#btn_back.back-btn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+.weather-controls {
+    position: static; /* Cambio de absolute a static */
+    top: auto;
+    right: auto;
+    width: 100%; /* Ocupar todo el ancho disponible */
+    height: auto; /* Altura automática */
+    max-height: calc(100vh - 200px); /* Altura máxima para permitir scroll */
+    background: transparent; /* Fondo transparente para integrarse */
+    border-radius: 0;
+    box-shadow: none; /* Sin sombra */
+    z-index: auto;
+    display: flex; /* Cambio a flex para scrollbar */
+    flex-direction: column;
+    transform: none; /* Sin transformaciones */
+    transition: none; /* Sin transiciones de movimiento */
+    margin-top: 15px; /* Espacio superior */
+    padding: 0; /* Sin padding externo */
+    overflow-y: auto; /* Habilitar scrollbar vertical */
+}
+
+.weather-controls.is-open { transform: none; } /* Eliminar transformación */
+.controls-header {
+    display: none; /* Ocultar el header ya que está integrado */
+}
+.controls-body { 
+    padding: 0; /* Sin padding */
+    overflow-y: visible; /* Sin scroll interno */
+    display: flex; 
+    flex-direction: column; 
+    flex-grow: 0; /* Cambiado de 1 a 0 para que el footer quede abajo del contenido */
+    background: transparent; /* Fondo transparente */
+}
+
+/* Botón de cerrar - oculto en desktop, visible en móvil */
+.close-btn { 
+    display: none; /* Oculto por defecto en desktop */
+}
+.close-btn:hover { 
+    color: var(--primary-brand-color); 
+}
+
+/* Mostrar botón de cerrar solo en móvil */
+@media (max-width: 768px) {
+    .close-btn {
+        display: block !important;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 24px;
+        color: var(--primary-brand-color);
+        cursor: pointer;
+        z-index: 10;
+    }
+}
+
+.control-group { margin-bottom: 20px; }
+.control-group label { display: block; margin-bottom: 8px; color: var(--text-color); font-weight: 500; font-size: 14px; }
+.control-group select, .control-group input { width: 100%; padding: 10px; border: 2px solid var(--medium-gray); border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+.control-group select:focus, .control-group input:focus { outline: none; border-color: var(--secondary-brand-color); }
+.control-group hist-select:focus, .control-group input:focus { outline: none; border-color: var(--secondary-brand-color); }
+
+/* Quitar padding solo a los inputs dentro del filtro (gradient-container) */
+#gradient-container .control-group input,
+#gradient-container input {
+  padding: 0;
+  border: none;
+}
+
+.layer-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* siempre 2 botones por fila */
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.layer-btn {
+  display: flex;
+  flex-direction: column;       /* ícono arriba, texto abajo */
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;            /* todos con el mismo alto */
+  width: 100%;                  /* mismo ancho dentro de la celda */
+  padding: 14px 10px;
+  border: 2px solid var(--medium-gray);
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  box-sizing: border-box;
+}
+
+.layer-btn i {
+  display: block;
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.layer-btn:hover {
+  border-color: var(--secondary-brand-color);
+  color: var(--secondary-brand-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(193, 152, 98, 0.2);
+}
+
+.layer-btn.active {
+  background: linear-gradient(135deg, var(--primary-brand-color));
+  color: white;
+  border-color: transparent;
+}
+
+.animation-controls { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; }
+.play-btn { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-brand-color)); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(90, 27, 48, 0.3); flex-shrink: 0; font-size: 20px; }
+.play-btn:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(90, 27, 48, 0.4); }
+.speed-slider { flex: 1; }
+.speed-slider input[type="range"] { width: 100%; }
+
+/* Control footer buttons */
+.controls-footer {
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: auto; /* Empujar hacia abajo */
+}
+
+.footer-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    border: 1px solid var(--primary-brand-color);
+    background: white;
+    color: var(--primary-brand-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Botón de historial más ancho que ocupe toda la fila */
+.footer-btn#btn_hist {
+    flex: 1 1 100%; /* Ocupa todo el ancho disponible */
+    min-width: 100%;
+}
+
+.footer-btn:hover {
+    background: var(--primary-brand-color);
+    color: white;
+}
+
+/* Enhanced Gradient Scale */
+.legend { 
+    position: absolute; 
+    bottom: 20px; 
+    right: 20px; 
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px); 
+    border-radius: 10px; 
+    padding: 15px; 
+    box-shadow: 0 5px 20px var(--shadow-color); 
+    z-index: 1000; 
+    width: 250px;
+    cursor: pointer;
+    user-select: none;
+}
+.legend-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text-color); text-align: center; }
+.legend-gradient { 
+    width: 100%; 
+    height: 20px; 
+    border-radius: 5px; 
+    position: relative;
+    cursor: pointer;
+}
+.legend-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; color: var(--dark-gray); }
+.legend-labels span { flex: 1; text-align: center; }
+.legend-labels span:first-child { text-align: left; }
+.legend-labels span:last-child { text-align: right; }
+
+/* Filter indicator */
+.filter-indicator {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid white;
+    border-radius: 3px;
+    pointer-events: none;
+    display: none;
+}
+
+/* On-Map Data Panels */
+.data-panel { 
+    position: absolute; 
+    bottom: 20px; 
+    left: calc(var(--sidebar-width) + 20px);
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px); 
+    border-radius: 15px; 
+    padding: 15px; 
+    box-shadow: 0 10px 30px var(--shadow-color); 
+    width: 300px; 
+    z-index: 1000; 
+}
+.data-panel h4 { margin-bottom: 10px; color: var(--primary-brand-color); }
+.data-value { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+.data-value:last-child { border-bottom: none; }
+.data-label { color: var(--dark-gray); }
+.data-number { font-weight: 600; color: var(--text-color); }
+
+/* Side menu when map is active */
+.side-menu {
+  --header-offset: var(--header-height, 64px);
+  position: fixed;
+  top: var(--header-offset); /* Siempre debajo del header */
+  left: 0;
+  width: var(--sidebar-width);
+  /* Hacer background levemente translúcido para que no se vea "full color" */
+  background-color: rgba(255,255,255,0.95);
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  border-right: 1px solid var(--border-color);
+  /* Bajar z-index para que los modales (z-index:2000) aparezcan por encima */
+  z-index: 900;
+  flex-shrink: 0;
+  height: calc(100vh - var(--header-offset)); /* Ocupa todo el alto debajo del header */
+  min-height: 320px; /* Altura mínima razonable */
+  overflow: visible; /* Permitir que los tooltips salgan por encima del mapa */
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+}
+
+/* Mini-leyenda de Clima (popup / tarjetas) */
+.clima-legend-mini {
+  border-radius: 8px;
+  background: rgba(255,255,255,0.95);
+  padding: 6px 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  color: var(--text-color);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.clima-legend-mini table { width: 100%; border-collapse: collapse; }
+.clima-legend-mini td { padding: 6px 6px; text-align: center; font-weight: 600; border-radius: 4px; }
+.clima-legend-mini td:first-child { text-align: left; font-weight: 700; color: var(--primary-brand-color); }
+.clima-legend-mini td:not(:first-child) { font-weight: 600; color: #111; }
+
+/* Estilos para la mini-leyenda ICA cuando se usa en otras partes (si existe) */
+.ica-legend-mini { background: transparent; padding: 4px 0; }
+.ica-legend-mini table td { padding: 4px 6px; font-size: 11px; font-weight: 700; border-radius: 3px; }
+.ica-legend-mini .ver-riesgos-link { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--primary-brand-color); }
+
+/* Accesibilidad: asegurar contraste de texto en celdas con colores oscuros */
+/* Note: text color for colored legend cells is computed in JS to ensure contrast. */
+
+@media (max-width: 520px) {
+  .clima-legend-mini { font-size: 12px; padding: 6px 6px; }
+  .clima-legend-mini td { padding: 4px 4px; }
+}
+
+/* Contenedor para los botones principales del menú */
+.side-menu .menu-buttons-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px; /* Reducir para que los botones estén más arriba y quepan sin scroll */
+  margin-bottom: 12px;
+}
+
+/* Posicionar el back button dinámicamente */
+.side-menu .back-btn {
+  margin-top: auto; /* Empuja el botón hacia el fondo del side-menu */
+  margin-bottom: 18px;
+  align-self: center;
+}
+
+/* Si quieres que el botón ocupe todo el ancho interno del sidebar,
+   descomenta la siguiente regla */
+/* .side-menu .back-btn { width: calc(var(--sidebar-width) - 24px); } */
+
+/* ===== Tooltips expandibles para side menu ===== */
+.side-menu .menu-tooltip {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-brand-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 0 8px 8px 0;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    margin-left: -10px;
+    pointer-events: none;
+    z-index: 1000000; /* Elevar para que supere capas del mapa */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor top-level para tooltips flotantes (si se crea por JS) */
+#floating-tooltips-root {
+  position: fixed !important;
+  inset: 0 !important;
+  pointer-events: none !important; /* allow clicks to pass through except on clones */
+  z-index: 2147483647 !important; /* maximum safe z-index */
+}
+
+/* Estilos del clon flotante para asegurar visibilidad sobre el mapa */
+.floating-tooltip-clone {
+  pointer-events: auto !important;
+  position: absolute !important;
+  background: var(--primary-brand-color) !important;
+  color: #fff !important;
+  padding: 8px 14px !important;
+  border-radius: 8px !important;
+  white-space: nowrap !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  display: block !important;
+  max-width: calc(100vw - 40px) !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.12s ease !important;
+  opacity: 0 !important;
+}
+
+.floating-tooltip-clone.show {
+  opacity: 1 !important;
+}
+
+/* Mostrar tooltip al hacer hover en el botón */
+.side-menu .menu-btn:hover .menu-tooltip,
+.side-menu .play-btn:hover .menu-tooltip,
+.side-menu .back-btn:hover .menu-tooltip {
+    opacity: 1;
+    visibility: visible;
+    margin-left: 0;
+}
+
+/* Asegurar que los botones tengan position relative para los tooltips */
+.side-menu .menu-btn,
+.side-menu .play-btn,
+.side-menu .back-btn {
+    position: relative;
+}
+
+/* Ocultar tooltips en móvil */
+@media (max-width: 768px) {
+    .side-menu .menu-tooltip {
+        display: none;
+    }
+}
+
+/* Side menu derecho para filtros - OVERLAY FIJO */
+.side-menu-right {
+  position: fixed;
+  top: 195px; /* Debajo del nav-menu */
+  right: 0;
+  bottom: 0; /* Pegar al fondo de la pantalla */
+  width: 400px;
+  /* Usar top+bottom en lugar de height para asegurar que quede pegado abajo
+     y que el cálculo se adapte correctamente en distintos monitores. */
+  background-color: #ffffff;
+  padding: 15px;
+  display: none; /* Oculto por defecto */
+  flex-direction: column;
+  border-left: 1px solid var(--border-color);
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+  z-index: 999; /* Por encima de otros elementos */
+  overflow-y: auto; /* Contenido desplazable si es necesario */
+  box-sizing: border-box; /* Asegura que padding no cambie el tamaño total */
+}
+
+/* Forzar que el panel esté exactamente pegado al borde derecho y abajo
+   y eliminar cualquier radio o margen que pudiera dejar espacio visible. */
+.side-menu-right {
+    margin: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    background-clip: padding-box;
+    /* Mantener una sombra sutil pero que no genere la sensación de gap */
+    box-shadow: -2px 0 12px rgba(0,0,0,0.08);
+    /* Mantener z-index por debajo de los modales (municipality-modal tiene 2000) */
+    z-index: 900;
+}
+
+/* Hacer el panel responsivo: en pantallas pequeñas ocupar todo el ancho
+   y superponerse sobre el contenido principal. */
+@media (max-width: 768px) {
+  .side-menu-right {
+    top: var(--nav-height, 120px); /* permitir ajustar si la nav cambia */
+    left: 0;
+    right: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto;
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 15px); /* iPhone safe area */
+  }
+}
+
+/* Mostrar side-menu-right solo en modo mapa */
+body.map-active .side-menu-right {
+    display: flex;
+}
+
+/* Ocultar side-menu-right cuando NO está en modo mapa */
+body:not(.map-active) .side-menu-right {
+    display: none !important;
+}
+
+.side-menu-right h3 {
+    margin: 0 0 12px 0; /* Reducido de 20px a 12px */
+    color: var(--primary-brand-color);
+    font-size: 18px;
+    border-bottom: 2px solid var(--secondary-brand-color);
+    padding-bottom: 8px; /* Reducido de 10px a 8px */
+}
+
+.control-section {
+    margin-bottom: 12px; /* Reducido de 20px a 12px para mejor aprovechamiento */
+    padding: 12px; /* Reducido de 15px a 12px */
+    background: #fbfaf9fa; /* Color dorado con transparencia */
+    border-radius: 8px;
+    border: 2px solid #c19862; /* Borde dorado para que sea visible */
+}
+
+.control-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.control-section p {
+    margin: 0;
+    color: var(--dark-gray);
+    font-size: 12px;
+}
+
+/* Estilos específicos para la simbología en el side-menu derecho */
+.side-menu-right .legend-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.side-menu-right .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.side-menu-right .legend-symbol {
+    flex-shrink: 0;
+}
+
+.side-menu-right .legend-item span {
+    font-size: 13px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.side-menu-right .legend-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    background: rgba(193, 152, 98, 0.1);
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.side-menu-right .legend-hint span {
+    font-size: 11px;
+    color: var(--dark-gray);
+    font-style: italic;
+}
+
+/* Ajustes específicos para gradient canvas en side-menu-right */
+.side-menu-right #gradient-container canvas {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: 22px !important;
+}
+
+.side-menu-right #dynamic-gradient-canvas {
+    width: 100% !important;
+    max-width: 350px !important;
+}
+
+.side-menu-right .control-group {
+    margin-bottom: 10px; /* Reducido de 15px a 10px */
+}
+
+.side-menu-right .control-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.side-menu-right .control-group select,
+.side-menu-right .control-group input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid var(--medium-gray);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+.side-menu-right .control-group select:focus,
+.side-menu-right .control-group input:focus {
+    outline: none;
+    border-color: var(--secondary-brand-color);
+}
+
+.side-menu-right .layer-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.side-menu-right .layer-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70px;
+    padding: 10px 6px;
+    border: 2px solid var(--medium-gray);
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+}
+
+.side-menu-right .layer-btn i {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.side-menu-right .layer-btn:hover {
+    border-color: var(--secondary-brand-color);
+    color: var(--secondary-brand-color);
+    transform: translateY(-1px);
+}
+
+.side-menu-right .layer-btn.active {
+    background: var(--primary-brand-color);
+    color: white;
+    border-color: transparent;
+}
+
+.side-menu-right .animation-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.side-menu-right .play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-brand-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.side-menu-right .play-btn:hover {
+    transform: scale(1.05);
+}
+
+.side-menu-right .controls-footer {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.side-menu-right .footer-btn {
+    flex: 1;
+    min-width: 70px;
+    padding: 6px 8px;
+    border: 1px solid var(--primary-brand-color);
+    background: white;
+    color: var(--primary-brand-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.side-menu-right .footer-btn:hover {
+    background: var(--primary-brand-color);
+    color: white;
+}
+
+/* Menu button styles */
+.menu-btn {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--medium-gray);
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--dark-gray);
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.menu-btn:hover {
+    color: var(--primary-brand-color);
+    border-color: var(--secondary-brand-color);
+    background: var(--secondary-brand-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(193, 152, 98, 0.2);
+}
+
+.menu-btn.active {
+    background: linear-gradient(135deg, var(--primary-brand-color)) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 0 2px rgba(90, 27, 48, 0.3), 0 5px 15px rgba(90, 27, 48, 0.4) !important;
+}
+
+.menu-btn.active:hover {
+    background: linear-gradient(135deg, var(--primary-brand-color)) !important;
+    color: white !important;
+    transform: none !important;
+}
+
+.menu-label {
+    display: none;
+}
+
+/* Municipality Data Modal */
+.municipality-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Estilos de modal eliminados para evitar conflicto, se definen más abajo específicamente --- */
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--secondary-brand-color);
+}
+
+.modal-title {
+    color: var(--primary-brand-color);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 10px;
+  right: 8px; /* Más a la derecha */
+  font-size: 2rem;
+  line-height: 1;
+  color: #c19862be; /* Color solicitado con canal alpha */
+  cursor: pointer;
+  padding: 4px 8px; /* Área clickeable un poco mayor */
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: #c19862; /* Versión sólida al pasar el mouse */
+  transform: scale(1.05);
+}
+
+/* Compatibilidad si se usa la clase Bootstrap .close dentro del modal */
+.modal-content .close,
+.modal-header .close {
+  position: absolute;
+  /*top: 8px;*/
+  right: 8px;
+  font-size: 2rem;
+  line-height: 1;
+  color: #c19862be;
+  opacity: 1; /* Evita que Bootstrap reduzca la opacidad */
+  text-shadow: none;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+.modal-content .close:hover,
+.modal-header .close:hover,
+.modal-content .close:focus,
+.modal-header .close:focus {
+  color: #c19862;
+  transform: scale(1.05);
+}
+
+.pollutant-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.pollutant-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--light-gray);
+}
+
+.pollutant-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.pollutant-info {
+    flex: 1;
+}
+
+.pollutant-name {
+    font-size: 12px;
+    color: var(--dark-gray);
+    margin-bottom: 2px;
+}
+
+.pollutant-value {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-top: 20px;
+}
+
+.download-btn {
+    position: absolute;
+    top: -5px;
+    right: 0;
+    padding: 8px 15px;
+    background: var(--secondary-brand-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    background: var(--primary-brand-color);
+}
+
+/* ADDED: Historial Dashboard Styles */
+/* Fix for historial dashboard positioning */
+/* Desktop: Make historial-dashboard use full available width (from sidebar edge to right edge) */
+#hist {
+    display: none; /* Oculto por defecto - solo visible al hacer clic en el botón historial */
+}
+
+#historial-dashboard {
+    left: var(--sidebar-width) !important;
+    width: calc(100% - var(--sidebar-width)) !important;
+    display: none; /* Oculto por defecto - solo visible al hacer clic en el botón */
+    position: fixed !important;
+    top: 0 !important;
+    height: 100vh !important;
+    z-index: 997 !important; /* Por encima de side-menu-right y filter-info */
+    overflow-y:scroll !important;
+    background-color: #f8f9fa !important;
+    padding-top: 70px !important; /* Espacio para el header */
+}
+
+/* Ocultar side-menu-right cuando historial está visible */
+body:not(.map-active) .side-menu-right,
+#hist:not([style*="display: none"]) ~ * .side-menu-right {
+    display: none !important;
+}
+
+/* Ocultar filter-info cuando historial está visible */
+body:not(.map-active) #filter-info {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+    
+    /* Ocultar side-menu-right en móvil */
+    .side-menu-right {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    body.map-active #app {
+        display: flex !important;
+        flex-grow: 1;
+        overflow: hidden;
+        margin-top: 80px;
+        height: calc(100vh - 80px);
+    }
+    
+    /* Permitir scroll cuando el historial está visible en móvil */
+    body:not(.map-active) #app {
+        display: block !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+    
+    body:not(.map-active) {
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+    
+    body.map-active .side-menu { 
+        flex-direction: row; 
+        width: 100%; 
+        height: auto;
+        justify-content: space-around; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border-color); 
+        padding: 10px 5px; 
+        gap: 5px; 
+    }
+    
+    #main-content {
+        width: 100%;
+        height: calc(100% - 80px);
+    }
+    
+    /* Ocultar main-content cuando el historial está visible en móvil */
+    body:not(.map-active) #main-content {
+        display: none !important;
+    }
+    
+    .menu-btn { 
+        width: auto; 
+        flex: 1; 
+        margin: 0 2px; 
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .weather-controls {
+        position: absolute;
+        top: 20px;
+        right: 0px;
+        width: 85%;
+        max-width: 380px;
+        height: calc(100% - 40px);
+        background: white;
+        box-shadow: -5px 0 25px var(--shadow-color);
+        z-index: 1002;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    .map-controls {
+        position: absolute;
+        top: 100px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 7000; /* Incrementado para estar sobre todos los elementos */
+    }
+    
+    .data-panel { 
+        left: 20px;
+        width: calc(100% - 40px);
+        max-width: 300px;
+    }
+    
+    #map-watermark { 
+        display: none; 
+    }
+
+    .modal-content {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+        width: calc(100% - 20px);
+        max-height: calc(100% - 20px);
+        padding: 20px;
+    }
+
+    .pollutant-summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .chart-container {
+        height: 250px;
+        padding: 10px;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+
+    .download-btn {
+        font-size: 0;       /* oculta texto */
+        padding: 10px; 
+        width: 30px;
+        height: 35px;
+        border-radius: 6px; /* esquinas cuadradas, puedes ajustar */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .download-btn::before {
+        font-size: 18px;
+        content: "\f019";   /* código unicode de FontAwesome fa-download */
+        font-family: "Font Awesome 5 Free"; 
+        font-weight: 900;
+    } 
+
+    #historial-dashboard {
+        position: static !important; /* Cambiado de relative a static para que no se corte */
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100vw !important; /* Ancho completo del viewport */
+        max-width: 100vw !important;
+        padding: 15px 12px 36px !important;
+        margin: 0 !important; /* Sin margen lateral */
+        margin-top: 160px !important; /* Espacio para el header en móvil */
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 5000 !important;
+        background-color: #f8f9fa !important;
+        min-height: auto !important; /* Dejar que el contenido determine la altura */
+        height: auto !important;
+        overflow: visible !important; /* Sin scroll interno, usar el scroll del body */
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Asegurar que el contenido interno del historial no se salga */
+    #historial-dashboard * {
+        /*max-width: 100% !important;*/
+        box-sizing: border-box !important;
+    }
+    
+    /* Ocultar weather-controls completamente cuando el historial está visible en móvil */
+    body:not(.map-active) .weather-controls,
+    body:not(.map-active) #weather-controls {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+    
+    /* Hide filter-info in mobile when historial is shown */
+    #filter-info {
+        top: 140px !important;
+        right: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: calc(100% - 20px) !important;
+        z-index: 1500;
+    }
+    
+    /* Ensure gradient scale is visible and properly positioned */
+    #gradient-container.horizontal-mode.embedded.bottom-floating {
+        bottom: 40px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        width: calc(100% - 40px) !important;
+        max-width: 400px !important;
+        z-index: 1500;
+    }
+    
+    /* Ensure map and app containers don't exceed viewport */
+    #app, #map {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    
+    /* Ensure filter info is visible in mobile */
+    #filter-info {
+        top: 90px !important;
+        left: 110px !important;
+        right: 30% !important;
+        transform: translateX(-50%) !important;
+        max-width: calc(100% - 20px) !important;
+        z-index: 999;
+    }
+}
+
+#historial-dashboard .variable-toggle,
+#historial-dashboard .variable-toggle .label {
+  font-size: 12px;          /* tamaño del texto */
+  line-height: 1.1;         /* altura de línea compacta */
+  text-align: center;       /* centra el texto */
+  white-space: normal;      /* permite varias líneas */
+  text-overflow: ellipsis;
+  overflow: hidden; 
+  display: -webkit-box;        /* comportamiento tipo caja flexible */
+    -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+
+/* ===== Tablas “pro” para modales y paneles ===== */
+.table-wrapper,
+.stats-table-wrapper {               /* ya tienes .stats-table-wrapper */
+  max-height: 380px;
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  background: #fff;
+}
+
+/* Aplica a cualquier tabla que marques como .styled-table
+   y a la que ya existe (.stats-table) del dashboard */
+.styled-table,
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* Encabezado pegajoso con el color de tu paleta */
+.styled-table thead th,
+.stats-table thead th {
+  position: sticky;
+  top: 0;
+  background: #5a1b30;   /* vino */
+  color: #fff;
+  text-transform: none;
+  letter-spacing: .2px;
+  font-weight: 600;
+  padding: 12px 14px;
+  z-index: 1;
+}
+
+/* Celdas */
+.styled-table tbody td,
+.stats-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+/* Rayado suave + hover */
+.styled-table tbody tr:nth-child(even),
+.stats-table tbody tr:nth-child(even) { background: #fcfcfc; }
+
+.styled-table tbody tr:hover,
+.stats-table tbody tr:hover { background: #faf6f7; }
+
+/* Columna “Unidades” o valores numéricos alineados a la derecha */
+.styled-table td:last-child,
+.stats-table td:last-child { text-align: right; }
+
+/* Badges de estado (opcional) */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge.good      { background:#e8f5ec; color:#1b8a4b; border:1px solid #cfead8; }
+.badge.moderate  { background:#fff7e6; color:#a86b00; border:1px solid #ffe9bf; }
+.badge.bad       { background:#fdecec; color:#b3261e; border:1px solid #f8caca; }
+
+/* Responsive tip */
+@media (max-width: 520px){
+  .styled-table, .stats-table { font-size: 13px; }
+}
+
+/* ---- Encabezado del bloque resumen ---- */
+.summary-block { margin-bottom: 20px; }
+.summary-header {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;
+}
+.summary-header h4.summary-title { font-size:2em; font-weight:700; margin:0; color:#5a1b30 !important; line-height:1.1; }
+.summary-header h4.summary-title::before{ content:none !important; }
+
+/* Botón descargar, compatible con lo que ya usas */
+.download-btn{
+  background:#c19862be; color:#fff; border:none; padding:8px 16px; font-size:1em;
+  border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:6px;
+}
+
+/* ---- Grid de tarjetas de resumen (meteo) ---- */
+.summary-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap:15px;
+  margin-bottom:25px;
+}
+.summary-card{
+  display:flex; align-items:flex-start; gap:10px;
+  padding:14px 16px; 
+  background: #f7f8fa; 
+  border:1px solid var(--medium-gray,#ddd);
+  border-radius:10px;
+  position:relative;
+  transition: background .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.summary-icon{
+  width:24px; height:24px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:12px;
+}
+.summary-body{ flex:1; }
+.summary-name{ font-size:12px; color:#666; margin-bottom:2px; }
+.summary-value{ font-weight:600; color:#333; }
+
+/* Hover consistente con pollutant-item */
+.summary-card:hover{ background:#ffffff; box-shadow:0 4px 10px rgba(0,0,0,.06); }
+
+/* Reinterpretación del icono para parecerse al usado en historial */
+.summary-card .summary-icon{ color: var(--primary-brand-color,#5a1b30); font-size:20px; line-height:1; display:flex; align-items:center; justify-content:center; width:28px; }
+.summary-card .summary-body{ line-height:1.2; }
+.summary-card .summary-name{ font-size:12px; font-weight:500; color:#666; margin-bottom:4px; }
+.summary-card .summary-value{ font-size:15px; font-weight:600; color:#222; }
+
+/* Botón CSV simplificado sin ícono */
+.csv-btn-simple{
+  background: #c19862; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; letter-spacing:.4px;
+  transition: background .25s ease, box-shadow .25s ease;
+}
+.csv-btn-simple:hover{ background:#b88a50; box-shadow:0 4px 12px rgba(193,152,98,.35); }
+
+/* Botón descarga masiva con ícono a la izquierda */
+.download-all-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  white-space: normal;
+  text-align: center;
+}
+.download-all-btn i { font-size: 1rem; }
+
+/* Barra y botón compacto de descarga masiva en listado de datos */
+.bulk-download-bar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 4px 8px 8px 8px;
+  box-sizing: border-box;
+  margin-bottom: 4px;
+}
+.mini-download-btn {
+  background: #c19862;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  letter-spacing: .4px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  transition: background .25s ease, transform .2s ease, box-shadow .25s ease;
+}
+.mini-download-btn i { font-size: 13px; }
+.mini-download-btn:hover { background:#5a1b30; transform: translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.22); }
+.mini-download-btn:active { transform: translateY(0); box-shadow:0 2px 6px rgba(0,0,0,.15); }
+.mini-download-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* Ícono de descarga individual en filas de municipios */
+.row-download-link {
+  color: #c19862;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  transition: background .25s ease, color .25s ease, transform .2s ease;
+}
+.row-download-link i { font-size: 14px; }
+.row-download-link:hover {
+  color: #ffffff;
+  background: #5a1b30;
+  transform: translateY(-2px);
+}
+.row-download-link:active {
+  transform: translateY(0);
+  background: #4a1425;
+}
+
+/* Botón descarga dentro de tarjeta de gráfica (si se añade) */
+.chart-card .chart-download-btn{
+  position:absolute; top:8px; right:8px;
+  background: var(--secondary-brand-color, #7d2545);
+  color:#fff; border:none; border-radius:6px;
+  font-size:11px; padding:6px 10px; cursor:pointer;
+  display:flex; align-items:center; gap:4px; line-height:1;
+  box-shadow:0 2px 4px rgba(0,0,0,.12);
+  transition: background .25s ease, transform .2s ease;
+}
+.chart-card .chart-download-btn:hover{ background: var(--primary-brand-color,#5a1b30); transform:translateY(-2px); }
+.chart-card .chart-download-btn i{ font-size:12px; }
+
+/* Encabezado personalizado para las gráficas en modal */
+.chart-card .chart-header{
+  display:flex; align-items:center; gap:10px; margin-bottom:6px; padding:4px 2px 0 2px;
+}
+.chart-card .chart-header .summary-icon{ 
+  width:28px; height:28px; display:flex; align-items:center; justify-content:center; 
+  color:#5a1b30; font-size:18px; background:transparent; padding:0; box-shadow:none; border:none;
+}
+.chart-card .chart-header .chart-title-text{ 
+  font-family:'Poppins',sans-serif; font-size:15px; font-weight:600; color:#5a1b30; letter-spacing:.3px; line-height:1.1;
+}
+
+/* Ajustes de contenedor de estadísticas para igualar estilo referencia */
+.stats-container h4{
+  color: var(--primary-brand-color,#5a1b30);
+  font-weight:600; font-size:1.3rem; margin:0 0 18px 0;
+  letter-spacing:.3px;
+}
+
+/* Ajustar tabla de stats a estilo más limpio */
+.stats-table-wrapper{ overflow-x:auto; }
+.stats-table{
+  width:100%; border-collapse:collapse; font-size:14px;
+  background:#fff; border-radius:10px; overflow:hidden;
+}
+.stats-table thead th{ background: var(--light-gray,#f2f2f4); }
+.stats-table th,.stats-table td{ padding:12px; border-bottom:1px solid var(--border-color,#e2e2e5); }
+.stats-table tbody tr:hover{ background:#f8f9fa; }
+
+/* Modificadores de color para el circulito */
+.bg-red{ background:#ff4757; }
+.bg-blue{ background:#3742fa; }
+.bg-green{ background:#2ed573; }
+.bg-orange{ background:#ffa502; }
+.bg-gray{ background:#747d8c; }
+.bg-slate{ background:#57606f; }
+
+
+/* ===== Estilo moderno para modal-content ===== */
+/* Hacer el modal mucho más ancho */
+.modal-dialog {
+  width: 85% !important;
+  max-width: 1400px !important;
+  margin: 30px auto !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: calc(100vh - 60px) !important; /* Centrado vertical */
+}
+
+.modal-dialog .modal-content {
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  overflow: visible !important; /* Cambiar de hidden a visible para que se vean las gráficas */
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  max-height: 77vh !important; /* Altura máxima para permitir scroll */
+  width: 100% !important;
+  contain: layout; /* evita recálculos que afecten el navbar */
+  overscroll-behavior: contain; /* evita scroll bubbling */
+  margin: 0 auto; /* Centrado horizontal */
+}
+
+/* En móvil, los modales con gráficas ocupan casi todo el ancho */
+@media (max-width: 768px) {
+  .modal-dialog {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+}
+
+/* Header del modal con gradiente y estilo moderno */
+.modal-header {
+  background: linear-gradient(135deg, #5a1b30 0%, #7d2545 100%);
+  color: white;
+  border-bottom: none !important;
+  padding: 20px 25px;
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.8rem !important;
+  margin: 0 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón cerrar moderno */
+.modal-header .close,
+.modal-header .btn-close {
+  color: #f7c17a !important;
+  opacity: 0.8 !important;
+  font-size: 28px !important;
+  font-weight: 300 !important;
+  text-shadow: none !important;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-header .close:hover,
+.modal-header .btn-close:hover {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+/* Body del modal con padding mejorado */
+.modal-body {
+  padding: 25px !important;
+  background: white;
+  color: #333;
+  max-height: 65vh !important; /* Altura máxima para el contenido */
+  overflow-y: auto !important; /* Scroll vertical cuando sea necesario */
+}
+
+/* Mejorar el aspecto de la información dentro del modal */
+.modal-content .summary-block {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+.modal-content .table-wrapper,
+.modal-content .stats-table-wrapper{
+  max-height: 380px;
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  background: #fff;
+  margin-bottom: 20px;
+}
+
+.modal-content .styled-table,
+.modal-content .stats-table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.modal-content .styled-table thead th,
+.modal-content .stats-table thead th{
+  position: sticky; 
+  top: 0;
+  background: #5a1b30;   /* mismo color vino del historial */
+  color: #fff;
+  text-transform: none;
+  letter-spacing: .2px;
+  font-weight: 600;
+  padding: 12px 14px;
+  z-index: 1;
+}
+
+.modal-content .styled-table tbody td,
+.modal-content .stats-table tbody td{
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.modal-content .styled-table tbody tr:nth-child(even),
+.modal-content .stats-table tbody tr:nth-child(even){ 
+  background: #fcfcfc; 
+}
+
+.modal-content .styled-table tbody tr:hover,
+.modal-content .stats-table tbody tr:hover{ 
+  background: #faf6f7; 
+}
+
+.modal-content .styled-table td:last-child,
+.modal-content .stats-table td:last-child{ 
+  text-align: right; 
+}
+
+/* Botón descargar del modal mejorado */
+.modal-content .download-btn{
+  background: linear-gradient(135deg, #c19862be 0%, rgba(184, 145, 94, 0.959) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-content .download-btn:hover{
+  background: linear-gradient(135deg, #5a1b30 0%, #7c2542 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+/* Estructura summary del modal mejorada */
+.modal-content .summary-block { 
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.modal-content .summary-header {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 15px;
+}
+
+.modal-content .summary-header h4 { 
+  color: #2c3e50;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-content .summary-header h4::before {
+  content: '📊';
+  font-size: 1.2em;
+}
+
+/* Tabla con estilo mejorado */
+.modal-content .table-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  margin-bottom: 0;
+}
+
+.modal-content .styled-table thead th {
+  background: linear-gradient(135deg, #5a1b30 0%, #7d2545 100%) !important;
+  color: white !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+  padding: 15px;
+}
+
+/* ===== Gráficas del modal con estilo moderno ===== */
+.modal-content .charts-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Una sola columna en modales para más espacio */
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.modal-content .chart-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible !important; /* Asegurar que el contenido sea visible */
+  animation: fadeInUp .35s ease both;
+  margin-bottom: 20px; /* Espacio entre gráficas */
+}
+
+.modal-content .chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #c19862, #d4af7a, #c19862);
+}
+
+.modal-content .chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.modal-content .chart-card canvas {
+  height: 280px !important; /* Altura reducida para que quepa mejor */
+  max-height: 280px !important;
+  width: 100% !important;
+  display: block !important; /* Asegurar que el canvas se muestre */
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive para el modal moderno */
+@media (max-width: 768px) {
+  .modal-dialog {
+    width: 95% !important;
+    margin: 10px auto !important;
+    z-index: 1050; /* Asegura que esté por encima del navbar */
+  }
+  
+  .modal-content {
+    margin: 10px;
+    border-radius: 12px !important;
+  }
+  
+  .modal-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-title {
+    font-size: 1.4rem !important;
+  }
+  
+  .modal-body {
+    padding: 20px !important;
+  }
+  
+  .modal-content .chart-card {
+    padding: 15px;
+  }
+  
+  .modal-content .chart-card canvas {
+    height: 250px !important;
+    max-height: 250px;
+  }
+  
+  .modal-content .charts-grid {
+    gap: 16px;
+  }
+}
+
+/* Para pantallas grandes, hacer el modal aún más ancho */
+@media (min-width: 1450px) {
+  .modal-dialog {
+    width: 90% !important;
+    max-width: 1600px !important;
+  }
+}
+
+/* Responsive para modales en móvil */
+@media (max-width: 768px) {
+  .modal-content .chart-card {
+    padding: 10px;
+  }
+  
+  .modal-content .chart-card canvas {
+    height: 250px !important;
+    max-height: 250px;
+  }
+  
+  .modal-content .charts-grid {
+    gap: 16px;
+  }
+}
+
+/* ===== Layout responsive especial para toggles de variables (móvil) ===== */
+@media (max-width: 768px) {
+  #variable-toggles {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 12px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+  #variable-toggles .variable-toggle {
+    padding: 12px 10px;
+    min-height: 64px;
+    font-size: 13px;
+    line-height: 1.15;
+  }
+  #variable-toggles .variable-toggle .icon { font-size: 20px; }
+  #variable-toggles .variable-toggle .label { font-size: 12px; }
+}
+
+/* === Mobile map optimization overrides === */
+@media (max-width:768px){
+  /* Navbar assumed 150px in desktop; enforce a smaller effective offset for map */
+  body.map-active #app { margin-top:150px; height:calc(100vh - 150px); }
+  #map { top:0; height:100% !important; }
+  /* Off-canvas style: keep panel hidden translating full width */
+  .weather-controls { width:85%; max-width:420px; height:100%; top:0 !important; right:10; border-radius:0 0 0 12px; }
+  /* Legacy rule kept but overridden later by refined block */
+  .weather-controls:not(.is-open){ transform:translateX(100%) !important; }
+  .weather-controls.is-open { box-shadow:-4px 0 18px rgba(0,0,0,.25); }
+  /* Floating toggle already exists (#toggle-controls-btn). Ensure it floats above gradient */
+  .map-controls { top:45px !important; } /* raised 20px vs previous 160px */
+  /* Search bar reposition to sit inside map with slight offset */
+  #map-top-bar{ top:235px !important; left:8px !important; width:260px !important; }
+  #map-top-bar #municipio-map-control{ box-shadow:0 4px 14px rgba(0,0,0,.18); }
+  /* Gradient scale adapt spacing */
+  #gradient-container.horizontal-mode.embedded.bottom-floating{ top: auto; bottom:8px; left:8px; width:calc(100% - 16px); z-index: 4000;}
+}
+
+/* ===== Refined MOBILE weather-controls overlay (final override) ===== */
+@media (max-width:768px){
+  /* Forzar que side-menu-right sea visible pero posicionado fuera de pantalla
+     para que su hijo weather-controls pueda posicionarse independientemente */
+  #side-menu-right,
+  .side-menu-right {
+    display: block !important; /* Cambiar de none a block */
+    position: fixed !important;
+    left: -9999px !important; /* Mover fuera de pantalla */
+    top: -9999px !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  /* Pero weather-controls dentro debe ser visible de forma independiente */
+  .weather-controls,
+  #weather-controls {
+    position: fixed !important;
+    top: 220px !important;
+    right: 10 !important;
+    left: auto !important;
+    width: 95% !important;
+    max-width: 420px !important;
+    height: calc(100vh - 240px) !important; /* Altura fija para que overflow funcione */
+    border-radius: 16px 0 0 16px !important;
+    box-shadow: -4px 0 18px rgba(0,0,0,.25) !important;
+    background: #ffffff !important;
+    z-index: 6000 !important;
+    transform: translateX(0) !important; /* Visible por defecto para debug */
+    transition: transform .35s cubic-bezier(.4,.0,.2,1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; /* Ocultar overflow en el contenedor principal */
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Estado cerrado - fuera de pantalla a la derecha */
+  .weather-controls:not(.is-open),
+  #weather-controls:not(.is-open){
+    transform: translateX(100%) !important;
+    pointer-events: none !important;
+  }
+  
+  /* Estado abierto - visible en pantalla */
+  .weather-controls.is-open,
+  #weather-controls.is-open { 
+    transform: translateX(0) !important;
+    box-shadow: -4px 0 18px rgba(0,0,0,.25) !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Header compacto en móvil - VISIBLE - altura fija */
+  .weather-controls .controls-header { 
+    display: flex !important; /* Mostrar header en móvil */
+    padding: 14px 16px 10px 16px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0; /* No reducir altura */
+  }
+  .weather-controls .controls-header h3 { font-size:1rem; }
+  
+  /* Botón de cerrar visible en móvil */
+  .weather-controls .close-btn,
+  .weather-controls #close-controls-btn {
+    display: block !important;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--primary-brand-color);
+    cursor: pointer;
+  }
+  
+  /* Cuerpo scrolleable - altura mínima 0 para permitir overflow */
+  .weather-controls .controls-body {
+    padding: 16px 16px 12px 16px;
+    overflow-y: auto !important; /* Solo el body es scrolleable */
+    overflow-x: hidden !important;
+    flex: 1 1 0 !important; /* Cambiar a 0 para permitir shrink */
+    min-height: 0 !important; /* Crítico para que funcione overflow en flex child */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain; /* evita que scroll interno afecte navbar */
+  }
+  
+  /* Footer con altura fija */
+  .weather-controls .controls-footer { 
+    padding: 10px 0 12px 0; 
+    gap: 8px;
+    flex-shrink: 0; /* No reducir altura */
+  }
+  .weather-controls .control-group { margin-bottom:14px; }
+  .weather-controls .control-group label { font-size:13px; margin-bottom:6px; }
+  .weather-controls select,
+  .weather-controls input[type="text"],
+  .weather-controls input[type="number"],
+  .weather-controls input[type="range"] { font-size:13px; padding:8px 10px; }
+  .weather-controls .layer-buttons { gap:8px; }
+  .weather-controls .layer-btn { min-height:84px; font-size:12px; padding:10px 6px; }
+  .weather-controls .layer-btn i { font-size:22px; margin-bottom:4px; }
+
+  .weather-controls .animation-controls { padding-top:12px; gap:10px; }
+  .weather-controls .play-btn { width:44px; height:44px; font-size:18px; }
+  .weather-controls .controls-footer { padding:10px 0 12px 0; gap:8px; }
+  .weather-controls .footer-btn { font-size:11px; padding:6px 8px; }
+
+  /* Scrollbar más discreto dentro del panel */
+  .weather-controls .controls-body::-webkit-scrollbar { width:8px; }
+  .weather-controls .controls-body::-webkit-scrollbar-track { background:transparent; }
+  .weather-controls .controls-body::-webkit-scrollbar-thumb { background:#c7c7c7; border-radius:4px; }
+
+  /* Backdrop opcional (sólo visible cuando panel abierto) */
+  body.map-active .wc-backdrop { display:none; }
+  body.map-active .weather-controls.is-open + .wc-backdrop { display:block; }
+  .wc-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:5990; backdrop-filter:blur(2px); }
+}
+
+  /* ====== OpenLayers Attribution (hacerlo más pequeño) ====== */
+  .ol-attribution.ol-unselectable.ol-control {
+    font: 10px/1.2 "Poppins", Arial, sans-serif !important; /* texto reducido */
+    padding: 2px 4px !important;
+    bottom: 4px !important; /* acercar al borde si se desea */
+    left: 4px !important; /* Cambiado de right a left para mover hacia la izquierda */
+    right: auto !important; /* Resetear right */
+    background: rgba(255,255,255,0.65) !important;
+    backdrop-filter: blur(4px);
+    border-radius: 6px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  }
+  .ol-attribution.ol-unselectable.ol-control button {
+    font-size: 11px !important;
+    width: 18px !important;
+    height: 18px !important;
+    line-height: 16px !important;
+    padding: 0 !important;
+    border-radius: 4px !important;
+  }
+  .ol-attribution.ol-unselectable.ol-control ul {
+    margin: 0 !important;
+    padding: 0 2px !important;
+    gap: 2px !important;
+  }
+  .ol-attribution.ol-unselectable.ol-control li { margin:0 2px 0 0 !important; }
+  .ol-attribution.ol-unselectable.ol-control a, 
+  .ol-attribution.ol-unselectable.ol-control span { 
+    font-size: 10px !important; 
+    text-decoration:none !important;
+    color:#444 !important;
+  }
+  /* Estado colapsado: botón aún más compacto */
+  .ol-attribution.ol-collapsed { padding:0 !important; background:rgba(255,255,255,0.5) !important; }
+  .ol-attribution.ol-collapsed button { width:18px !important; height:18px !important; }
+
+  @media (max-width:768px){
+    .ol-attribution.ol-unselectable.ol-control { 
+      font-size:9px !important; 
+      bottom:6px !important; 
+      left:6px !important; /* Cambiado de right a left para móvil también */
+      right: auto !important; /* Resetear right */
+    }
+    .ol-attribution.ol-unselectable.ol-control button { font-size:10px !important; }
+  }
+
+/* ===== Estabilización para modales ===== */
+/* Evita movimiento del navbar cuando se abre modal */
+.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* ===== Prevención global de overflow horizontal ===== */
+/* Elimina la línea blanca a la derecha en todas las pantallas */
+html, body, #app, .container, .row {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Asegurar que ningún elemento se extienda fuera del viewport */
+* {
+  /*max-width: 100% !important;*/
+  box-sizing: border-box !important;
+}
+
+/* Map Legend (Simbología estática de cabeceras y estaciones) */
+.map-legend {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 999;
+    display: none; /* Oculto por defecto */
+}
+
+body.map-active .map-legend {
+    display: block; /* Visible solo en modo mapa */
+}
+
+.legend-header h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-brand-color);
+}
+
+.legend-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.legend-symbol {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.legend-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(193, 152, 98, 0.3);
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+    animation: fadeInPulse 2s ease-in-out;
+}
+
+.legend-hint span {
+    line-height: 1.3;
+}
+
+@keyframes fadeInPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.apply-indicator i {
+  margin-right: 5px;
+}
+
+/* ===== Estilos para texto a voz ===== */
+.accessibility-option.tts-active {
+    background-color: var(--secondary-brand-color);
+    color: white;
+    border-radius: 8px;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(193, 152, 98, 0.3);
+}
+
+.accessibility-option.tts-active .option-icon {
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.tts-status {
+    font-size: 10px;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+    text-align: center;
+}
+
+.accessibility-option.tts-active .tts-status {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ===== Guía de lectura ===== */
+.reading-guide {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-brand-color);
+    box-shadow: 0 0 8px rgba(90, 27, 48, 0.5);
+    z-index: 99999;
+    pointer-events: none;
+    transform: translateY(-1px);
+}
+
+.accessibility-option.guide-active {
+    background-color: var(--primary-brand-color);
+    color: white;
+    border-radius: 8px;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(90, 27, 48, 0.3);
+}
+
+.accessibility-option.guide-active .option-icon {
+    color: white;
+}
+
+.guide-status {
+    font-size: 10px;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+    text-align: center;
+}
+
+.accessibility-option.guide-active .guide-status {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* ===== Cursor grande ===== */
+body.large-cursor * {
+    cursor: none !important;
+}
+
+body.large-cursor::after {
+    content: '';
+    position: fixed;
+    top: var(--cursor-y, 0);
+    left: var(--cursor-x, 0);
+    width: 32px;
+    height: 32px;
+    background: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M2 2l6 12 2-4h4l-12-8z" fill="black"/><path d="M2 2l6 12 2-4h4l-12-8z" fill="none" stroke="white" stroke-width="0.5"/></svg>') no-repeat center center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 99998;
+    transform: scale(2) translate(-50%, -50%);
+    transform-origin: center;
+}
+
+body.large-cursor {
+    cursor: none !important;
+}
+
+/* ===== Voz a texto ===== */
+.accessibility-option.stt-active {
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 8px;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.accessibility-option.stt-active .option-icon {
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+.stt-status {
+    font-size: 10px;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+    text-align: center;
+}
+
+.accessibility-option.stt-active .stt-status {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.voice-input-active {
+    border: 2px solid #e74c3c !important;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.3) !important;
+    background-color: rgba(231, 76, 60, 0.05) !important;
+}
+
+.voice-input-active::before {
+    content: "🎤";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Estilo personalizado para el elemento meteo */
+#meteo h3 {
+    font-size: 38px !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+}
+
+#cali h3 {
+    font-size: 38px !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+
+}
+
+/* --- Estilos para el enlace y modal de Riesgos --- */
+.ver-riesgos-link-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 10px 0;
+}
+
+.ver-riesgos-link {
+  color: var(--primary-brand-color);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ver-riesgos-link:hover {
+  color: var(--secondary-brand-color);
+  text-decoration: underline;
+}
+
+/* Ajusta el ica-legend-mini para que se alinee con el enlace */
+.ica-legend-mini {
+  flex-grow: 1; /* Ocupa el espacio restante */
+  margin: 0 !important;
+}
+
+.ica-legend-mini table {
+  margin: 0;
+}
+
+#riesgosModal .table-riesgos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#riesgosModal .table-riesgos th,
+#riesgosModal .table-riesgos td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#riesgosModal .table-riesgos thead th {
+  background-color: #f4f4f4;
+  font-weight: 600;
+  color: var(--primary-brand-color);
+}
+
+#riesgosModal .table-riesgos tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Colores para las filas de la tabla de estadísticas del historial */
+.stats-table tr.riesgo-buena { background-color: rgba(0, 228, 0, 0.2); }
+.stats-table tr.riesgo-regular { background-color: rgba(255, 255, 0, 0.2); }
+.stats-table tr.riesgo-mala { background-color: rgba(255, 126, 0, 0.2); }
+.stats-table tr.riesgo-muy-mala { background-color: rgba(255, 0, 0, 0.2); }
+.stats-table tr.riesgo-extremadamente-mala { background-color: rgba(143, 63, 151, 0.2); }
+.stats-table tr.riesgo-peligrosa { background-color: rgba(153, 0, 51, 0.2); }
+
+.stats-table tr.clima-frio { background-color: rgba(0, 150, 255, 0.2); }
+.stats-table tr.clima-templado { background-color: rgba(0, 228, 0, 0.2); }
+.stats-table tr.clima-calor { background-color: rgba(255, 255, 0, 0.2); }
+.stats-table tr.clima-mucho-calor { background-color: rgba(255, 126, 0, 0.2); }
+
+/* ICA legend styles for popups */
+.ica-legend { margin: 0 0 8px 0; width: 100%; }
+.ica-legend-bar { display:flex; height: 26px; width: 100%; border-radius: 6px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); }
+.ica-segment { height: 100%; }
+.ica-legend-labels { display:flex; gap:8px; margin-top:8px; font-size:12px; color:#333; }
+.ica-label { text-align:center; }
+.ica-label .ica-range { font-size:11px; color:#666; margin-top:4px; }
+
+@media (max-width:640px){
+  .ica-legend-bar { height: 20px; }
+  .ica-legend-labels { font-size:11px; }
+}
+
+/* Make ICA legend sticky inside modal dialogs so it remains visible while scrolling graphs */
+.modal-dialog .modal-content .ica-legend {
+  position: sticky;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin-top: 0;
+  padding-top: 0; /* eliminar espacio arriba para quedar pegado */
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+  z-index: 9999; /* colocarlo por encima para asegurar que se vea pegado al tope */
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Remove extra top padding inside modal body so sticky element sits flush beneath any header */
+.modal-dialog .modal-content .modal-body {
+  padding-top: 0 !important;
+}
+
+/* If you prefer the legend to stick to the viewport top (over the modal header),
+   uncomment the rule below and comment the sticky rule above. This makes it fixed
+   so it will remain at the very top of the window. */
+/* .modal-dialog .modal-content .ica-legend {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1060 !important;
+} */
+
+/* Ensure modal content has a scrollable area so sticky works reliably */
+.modal-dialog .modal-content {
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+}
